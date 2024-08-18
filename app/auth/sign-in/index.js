@@ -4,9 +4,9 @@ import { Colors } from '@/constants/Colors'
 import { useRouter } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../configs/FirebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignIn() {
   const router = useRouter();
@@ -15,25 +15,23 @@ export default function SignIn() {
   const [password, setPassword] = useState();
   const [isvalid, setIsValid] = useState(true);
 
-  const OnSignIn=()=>{
+  const OnSignIn = async () => {
     if (!email || !password) { 
       setIsValid(false);
       return;
     }
-      signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed in 
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      console.log(user);
-      router.push('/habits');
-    })
-    .catch((error) => {
-      const errorCode = error.code;
+
+      if (user) router.replace('/habits');
+    } catch(error) {
       const errorMessage = error.message;
       console.log(errorMessage);
       setIsValid(false);
-    });
+    };
   }
+
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
     <LinearGradient
@@ -44,11 +42,6 @@ export default function SignIn() {
     >
       <SafeAreaView style={[styles.main]}>
         
-        <TouchableOpacity onPress={()=>router.back()}>
-          <Ionicons name="chevron-back" size={30} color="#7C81FC" style={[styles.arrow]}/>
-        </TouchableOpacity>
-        
-
         <View style={styles.container}>
           <Image source={require('../../../assets/images/Locked-In-Logo.png')}
             style={{
@@ -154,7 +147,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    top: -130,
+    top: -115,
   },
   container: {
     flexDirection: 'row',

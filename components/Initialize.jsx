@@ -9,7 +9,7 @@ export default function Initialize() {
   const router = useRouter();
 
   const handleNextPress = async () => {
-      router.push('/auth/sign-in');
+      router.replace('/auth/sign-in');
   }
 
   return (

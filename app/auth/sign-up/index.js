@@ -6,9 +6,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../../configs/FirebaseConfig';
-import Toast from 'react-native-root-toast';
+import { auth, db } from '../../../configs/FirebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
+import { doc, setDoc, Timestamp } from 'firebase/firestore';
 
 export default function SignIn() {
     const router = useRouter();
@@ -18,24 +19,34 @@ export default function SignIn() {
     const [password, setPassword] = useState();
     const [isvalid, setIsValid] = useState(true);
 
-    const OnCreateAccount=()=>{
+    const OnCreateAccount= async () => {
         if (!name || !email || !password) { 
             setIsValid(false);
             return;
         }
-        createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            // Signed in 
+
+        try { 
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-            router.push('/habits');
-            console.log(user);
-        })
-        .catch((error) => {
-            const errorCode = error.code;
+
+            // Store user data in Firestore
+            await setDoc(doc(db, 'users', user.uid), {
+                name: name,
+                email: email,
+                uid: user.uid,
+                createdAt: Timestamp.now(),
+            });
+
+            // Store the user ID in AsyncStorage for persistence
+            await AsyncStorage.setItem('userUID', user.uid);
+
+            if (user) router.replace('/habits');
+
+        } catch(error) {
             const errorMessage = error.message;
-            console.log(error.code,error.message);
+            console.log(errorMessage);
             setIsValid(false);
-        });
+        };
     }
     
     return (

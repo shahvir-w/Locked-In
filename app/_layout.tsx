@@ -7,13 +7,13 @@ export default function RootLayout() {
     'JockeyOne':require('./../assets/fonts/JockeyOne-Regular.ttf'),
     'Aldrich':require('./../assets/fonts/Aldrich-Regular.ttf'),
     'Shippori':require('./../assets/fonts/ShipporiAntiqueB1-Regular.ttf'),
-  })
+  });
 
   return (
     <Stack screenOptions={{
-      headerShown:false
-    }}> 
-      <Stack.Screen name="(tabs)"/>
+      headerShown: false,
+      gestureEnabled: false, // Disable swipe back gesture
+    }}>
     </Stack>
   );
 }
