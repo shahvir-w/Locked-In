@@ -21,18 +21,12 @@ export default function Index() {
   }, []);
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      {user ? (
-        <Redirect href='/habits'/>
-      ) : (
-        <Initialize />
-      )}
-    </SafeAreaView>
+      <SafeAreaView>
+        {user ? (
+          <Redirect href='./../screens/habits'/>
+        ) : (
+          <Initialize />
+        )}
+      </SafeAreaView>
   );
 }
