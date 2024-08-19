@@ -24,6 +24,9 @@ export default function SignIn() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
+      // Store the user ID in AsyncStorage for persistence
+      await AsyncStorage.setItem('userUID', user.uid);
+
       if (user) router.replace('/habits');
     } catch(error) {
       const errorMessage = error.message;

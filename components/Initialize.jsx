@@ -1,5 +1,5 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
-import React, { useState } from 'react';
+import React from 'react';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';

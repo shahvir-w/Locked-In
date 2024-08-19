@@ -3,26 +3,22 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Initialize from './../components/Initialize';
 import { Redirect } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NavigationContainer } from "@react-navigation/native";
 
 export default function Index() {
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
     const checkUser = async () => {
       // Check if there's a user in AsyncStorage
-      const storedUser = await AsyncStorage.getItem('user');
+      const storedUser = await AsyncStorage.getItem('userUID');
       if (storedUser) {
-        setUser(JSON.parse(storedUser));
+        setUser(storedUser); // Set the string value
       }
     };
 
     checkUser();
   }, []);
-
-  if (isLoading) {
-    return null; // Or some loading indicator
-  }
 
   return (
     <SafeAreaView
@@ -33,7 +29,7 @@ export default function Index() {
       }}
     >
       {user ? (
-        <Redirect href='../app/(tabs)/habits'/>
+        <Redirect href='/habits'/>
       ) : (
         <Initialize />
       )}
