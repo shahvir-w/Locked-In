@@ -1,12 +1,19 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Colors } from '@/constants/Colors';
-import { useRouter } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Initialize() {
   const router = useRouter();
+
+  const navigation = useNavigation();
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown:false
+    })
+  })
 
   const handleNextPress = async () => {
       router.replace('/auth/sign-in');

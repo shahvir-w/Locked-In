@@ -11,9 +11,10 @@ export default function RootLayout() {
 
   return (
     <Stack screenOptions={{
-      headerShown: false,
-      gestureEnabled: false, // Disable swipe back gesture
+      headerShown:false,
+      gestureEnabled: false,
     }}>
+      <Stack.Screen name="(tabs)" />
     </Stack>
   );
 }
