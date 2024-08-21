@@ -53,11 +53,11 @@ const TabBarButton = ({
     >
         <Animated.View style={animatedIconStyle}>
             {TabIcons[routeName]({
-                color: isFocused ? "#fff" : "#222"
+                color: isFocused ? "#fff" : "#fff"
             })}
         </Animated.View>
         
-        <Animated.Text style={[{ color: isFocused ? "#fff" : '#222', fontSize: 12 }, animatedTextStyle]}>{label}</Animated.Text>
+        <Animated.Text style={[{ color: "#fff", fontSize: 12 }, animatedTextStyle]}>{label}</Animated.Text>
   </Pressable>
   )
 }

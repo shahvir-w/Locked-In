@@ -29,7 +29,7 @@ export function TabBar({ state, descriptors, navigation } : BottomTabBarProps) {
     <View onLayout={onTabberLayout} style={styles.tabbar}>
         <Animated.View style={[animatedStyle, {
             position: 'absolute',
-            backgroundColor: '#723FEB',
+            backgroundColor: '#7C81FC',
             borderRadius: 30,
             marginHorizontal: 12,
             left: -5,
@@ -90,13 +90,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: Colors.WHITE,
+        backgroundColor: "#161414",
         marginHorizontal: 80,
         paddingVertical: 10,
         borderRadius: 35,
-        shadowColor: '#fff',
-        shadowOffset: {width: 0, height: 10},
-        shadowRadius: 10, 
-        shadowOpacity: 0.1,
     }
 })
