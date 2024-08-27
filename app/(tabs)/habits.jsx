@@ -1,61 +1,42 @@
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, Image } from 'react-native';
+import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Habit from '../../components/Habit';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import EmptyHabits from '../../components/EmptyHabits';
+import HabitsScrollView from '../../components/HabitsScrollView';
 
-export default function habits() {
+export default function Habits() {
+  const [userHabits, setUserHabits] = useState([["hey", 2]]);
+
   return (
     <SafeAreaView style={styles.main}>
+      <View style={styles.header}>
         <View style={styles.logoContainer}>
-          <Image source={require('../../assets/images/Locked-In-Logo.png')}
+          <Image
+            source={require('../../assets/images/Locked-In-Logo.png')}
             style={{
-                height: 60,
-                width: 55,
-                left: 0,
+              height: 60,
+              width: 55,
+              left: 0,
             }}
           />
-            <Text style={{
-                fontFamily: 'JockeyOne',
-                fontSize: 25,
-                color: '#7C81FC',
-                top:13,
-                left: -8,
-            }}>locked in</Text>
+          <Text style={styles.logoText}>locked in</Text>
         </View>
 
-        <ScrollView style={styles.ItemsWrapper}>
-          <Text style={{
-                  fontFamily: 'aldrich',
-                  textAlign: 'center',
-                  fontSize: 18,
-                  color: '#fff',
-                  top: 0,
-          }}>you have x tasks remaining</Text>
-          
-          <View style={styles.items}>
-            <Habit number={"4"} text={"drink 2 liters of water"} checked={false} />
-            <Habit number={"3"} text={"make my bed"} checked={true} />
-            <Habit number={"1"} text={"walk the dog"} checked={false} />
-          </View>
-          
-          <Text style={{
-                  fontFamily: 'aldrich',
-                  textAlign: 'center',
-                  fontSize: 14,
-                  color: '#808080',
-                  marginBottom: 5,
-          }}>swipe left on habit to delete</Text>
+        <View style={styles.dateScroll}>
+          <AntDesign name="left" size={20} color="white" />
+          <Text style={styles.dateText}>today</Text>
+          <AntDesign name="right" size={20} color="white" />
+        </View>
+      </View>
 
-          <TouchableOpacity style={styles.addButton}>
-            <Ionicons name="add-circle-sharp" size={55} color="#7C81FC" />
-          </TouchableOpacity>
-        </ScrollView>
-        
-
-
-      </SafeAreaView>
-  )
+      {userHabits.length === 0 ? (
+        <EmptyHabits userHabits={userHabits} setUserHabits={setUserHabits}/>
+      ) : (
+        <HabitsScrollView userHabits={userHabits} setUserHabits={setUserHabits} />
+      )}
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -63,22 +44,34 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000",
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    height: 80,
+  },
   logoContainer: {
-    position: 'absolute',
     flexDirection: 'row',
     alignSelf: 'center',
-    top: 50,
-    left: 15,
   },
-  ItemsWrapper: {
-    paddingTop: 80,
-    paddingHorizontal: 20,
+  logoText: {
+    fontFamily: 'JockeyOne',
+    fontSize: 25,
+    color: '#7C81FC',
+    top: 13,
+    left: -8,
   },
-  items: {
+  dateScroll: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 20, 
+    left: -15,
   },
-  addButton: {
-    alignItems: 'center',
-  }
+  dateText: {
+    fontFamily: 'aldrich',
+    fontSize: 18,
+    color: '#fff',
+    marginHorizontal: 6,
+    top: 1,
+  },
 });
