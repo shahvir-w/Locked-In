@@ -9,7 +9,6 @@ export default function CreateHabit() {
   const [priority, setPriority] = useState(1);
 
   const handleConfirm = () => {
-    // setUserHabits([...userHabits, [habit, priority]]);
     router.push('habits');
   };
 

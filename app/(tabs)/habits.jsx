@@ -6,7 +6,7 @@ import EmptyHabits from '../../components/EmptyHabits';
 import HabitsScrollView from '../../components/HabitsScrollView';
 
 export default function Habits() {
-  const [userHabits, setUserHabits] = useState([["hey", 2]]);
+  const [userHabits, setUserHabits] = useState([]);
 
   return (
     <SafeAreaView style={styles.main}>
@@ -31,9 +31,9 @@ export default function Habits() {
       </View>
 
       {userHabits.length === 0 ? (
-        <EmptyHabits userHabits={userHabits} setUserHabits={setUserHabits}/>
+        <EmptyHabits />
       ) : (
-        <HabitsScrollView userHabits={userHabits} setUserHabits={setUserHabits} />
+        <HabitsScrollView />
       )}
     </SafeAreaView>
   );

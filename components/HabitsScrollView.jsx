@@ -4,7 +4,7 @@ import Habit from './Habit';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 
-export default function HabitsScrollView({ userHabits, setUserHabits }) {
+export default function HabitsScrollView() {
   const router = useRouter();
 
   const handleAddHabit = () => {
@@ -14,13 +14,11 @@ export default function HabitsScrollView({ userHabits, setUserHabits }) {
   return (
     <ScrollView style={styles.ItemsWrapper}>
       <Text style={styles.tasksText}>
-        you have {userHabits.length} tasks remaining
+        you have x tasks remaining
       </Text>
 
       <View style={styles.items}>
-        {userHabits.map((item, index) => (
-          <Habit key={index} text={item[0]} number={item[1]} checked={false} />
-        ))}
+        // where habits will go
       </View>
 
       <Text style={styles.deleteText}>swipe left on task to delete</Text>

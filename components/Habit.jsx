@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     checkedItem: {
-        backgroundColor: "#7C81FC", // Purple background for checked items
+        backgroundColor: "#7C81FC",
     },
     itemBox: {
         flexDirection: "row",
