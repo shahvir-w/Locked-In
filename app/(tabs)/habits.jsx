@@ -1,12 +1,44 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
-import React, { useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import EmptyHabits from '../../components/EmptyHabits';
 import HabitsScrollView from '../../components/HabitsScrollView';
+import { db } from '../../configs/FirebaseConfig';
+import { collection, query, onSnapshot } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import useMostRecentDate from '../../backend/FindRecentDate';
+import useDuplicateHabits from '../../backend/DuplicateHabits';
 
 export default function Habits() {
   const [userHabits, setUserHabits] = useState([]);
+  const [remainingTasks, setRemainingTasks] = useState(0);
+  const mostRecent = useMostRecentDate();
+  const today = new Date().toLocaleDateString('en-CA');
+
+  // useDuplicateHabits(mostRecent, today);
+
+  useEffect(() => {
+    const loadHabits = async () => {
+      const uid = await AsyncStorage.getItem('userUID');
+      if (uid) {
+        const habitsRef = collection(db, 'users', uid, 'days', today, 'habits');
+        
+        const q = query(habitsRef);
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+          const habits = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setUserHabits(habits);
+          setRemainingTasks(habits.filter(habit => !habit.isChecked).length);
+        });
+
+        return () => unsubscribe(); // Clean up listener on component unmount
+      }
+    };
+
+    loadHabits();
+  }, []);
 
   return (
     <SafeAreaView style={styles.main}>
@@ -24,16 +56,22 @@ export default function Habits() {
         </View>
 
         <View style={styles.dateScroll}>
-          <AntDesign name="left" size={20} color="white" />
+          <TouchableOpacity>
+            <AntDesign name="left" size={20} color="white" />
+          </TouchableOpacity>
+          
           <Text style={styles.dateText}>today</Text>
-          <AntDesign name="right" size={20} color="white" />
+
+          <TouchableOpacity>
+            <AntDesign name="right" size={20} color="white" />
+          </TouchableOpacity>
         </View>
       </View>
 
       {userHabits.length === 0 ? (
         <EmptyHabits />
       ) : (
-        <HabitsScrollView />
+        <HabitsScrollView habits={userHabits} remainingTasks={remainingTasks}/>
       )}
     </SafeAreaView>
   );

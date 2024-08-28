@@ -3,7 +3,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Initialize from './../components/Initialize';
 import { Redirect } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NavigationContainer } from "@react-navigation/native";
 
 export default function Index() {
   const [user, setUser] = useState<string | null>(null);

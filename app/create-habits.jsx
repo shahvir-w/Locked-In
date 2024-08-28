@@ -1,17 +1,39 @@
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Pressable } from 'react-native';
 import React, { useState } from 'react';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useRouter } from 'expo-router';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../configs/FirebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CreateHabit() {
   const router = useRouter();
   const [habit, setHabit] = useState('');
-  const [priority, setPriority] = useState(1);
+  const [importance, setImportance] = useState(1);
 
-  const handleConfirm = () => {
-    router.push('habits');
+  const handleConfirm = async () => {
+    if (habit.trim() === '') {
+      return;
+    }
+    
+    try {
+      const user = await AsyncStorage.getItem('userUID');
+      if (user) {
+        const today = new Date().toLocaleDateString('en-CA'); // Ensure local date format for consistency
+        const habitId = Date.now().toString();
+        const habitRef = doc(db, 'users', user, 'days', today, 'habits', habit);
+        await setDoc(habitRef, {
+          id: habitId,
+          name: habit,
+          importance: importance,
+          isChecked: false,
+        });
+        router.back();
+      }
+    } catch (error) {
+      console.error('Error adding habit:', error);
+    }
   };
-
 
   return (
     <View style={styles.container}>
@@ -32,15 +54,15 @@ export default function CreateHabit() {
           />
         </View>
         <View>
-          <Text style={[styles.label, { marginTop: 30 }]}>Priority</Text>
-          <View style={styles.priorityContainer}>
+          <Text style={[styles.label, { marginTop: 30 }]}>Importance</Text>
+          <View style={styles.importanceContainer}>
             {[1, 2, 3, 4, 5].map((num) => (
               <TouchableOpacity
                 key={num}
-                style={[styles.priorityButton, priority === num && styles.selectedPriority]}
-                onPress={() => setPriority(num)}
+                style={[styles.importanceButton, importance === num && styles.selectedImportance]}
+                onPress={() => setImportance(num)}
               >
-                <Text style={styles.priorityText}>{num}</Text>
+                <Text style={styles.importanceText}>{num}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -98,14 +120,14 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginTop: 10,
   },
-    priorityContainer: {
+  importanceContainer: {
       width: 320,
       alignSelf: 'center',
       flexDirection: 'row',
       justifyContent: 'space-between',
       marginTop: 10,
     },
-    priorityButton: {
+    importanceButton: {
       width: 50,
       height: 35,
       borderRadius: 10,
@@ -113,10 +135,10 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       backgroundColor: "#272424",
     },
-    selectedPriority: {
+    selectedImportance: {
       backgroundColor: '#7C81FC',
     },
-    priorityText: {
+    importanceText: {
       color: '#fff',
       fontFamily: 'Slackey',
       fontSize: 16,

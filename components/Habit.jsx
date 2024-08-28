@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Vibration } from 'react-native';
 import { HabitIcons } from '@/constants/icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../configs/FirebaseConfig';
 
 const Habit = (props) => {
     const [isChecked, setIsChecked] = useState(props.checked);
-
-    const toggleCheckBox = () => {
+    const toggleCheckBox = async () => {
         setIsChecked(!isChecked);
-
+      
+        // Update the habit in Firestore
+        const uid = await AsyncStorage.getItem('userUID');
+        const today = new Date().toLocaleDateString('en-CA');
+        const habitRef = doc(db, 'users', uid, 'days', today, 'habits', props.text);
+        await setDoc(habitRef, { isChecked: !isChecked }, { merge: true });
     };
 
     return (
