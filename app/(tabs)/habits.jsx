@@ -6,23 +6,50 @@ import HabitsScrollView from '../../components/HabitsScrollView';
 import { db } from '../../configs/FirebaseConfig';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import useOldestDate from '../../backend/FindOldestDate';
 import useMostRecentDate from '../../backend/FindRecentDate';
-import useDuplicateHabits from '../../backend/DuplicateHabits';
+import { duplicateHabits } from '../../backend/DuplicateHabits';
 
 export default function Habits() {
   const [userHabits, setUserHabits] = useState([]);
   const [remainingTasks, setRemainingTasks] = useState(0);
-  const mostRecent = useMostRecentDate();
   const today = new Date().toLocaleDateString('en-CA');
+  const [date, setDate] = useState(today);
+  const oldestDate = useOldestDate();
+  const mostRecentDate = useMostRecentDate();
 
-  // useDuplicateHabits(mostRecent, today);
+  useEffect(() => {
+    const checkAndDuplicate = async () => {
+      if (mostRecentDate && today !== mostRecentDate) {
+        await duplicateHabits(mostRecentDate, today);
+      }
+    };
+
+    checkAndDuplicate();
+  }, [mostRecentDate, today]);
+
+  const modifyDate = (dateString, days) => {
+    const dateParts = dateString.split('-');
+    const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+    date.setDate(date.getDate() + days);
+    return date.toISOString().split('T')[0];
+  };
+
+  const handleDateLeft = () => {
+    const newDate = modifyDate(date, -1);
+    if (newDate >= oldestDate) setDate(newDate);
+  };
+
+  const handleDateRight = () => {
+    const newDate = modifyDate(date, 1);
+    if (newDate <= today) setDate(newDate);
+  };
 
   useEffect(() => {
     const loadHabits = async () => {
       const uid = await AsyncStorage.getItem('userUID');
       if (uid) {
-        const habitsRef = collection(db, 'users', uid, 'days', today, 'habits');
-        
+        const habitsRef = collection(db, 'users', uid, 'days', date, 'habits');
         const q = query(habitsRef);
         const unsubscribe = onSnapshot(q, (snapshot) => {
           const habits = snapshot.docs.map(doc => ({
@@ -33,12 +60,12 @@ export default function Habits() {
           setRemainingTasks(habits.filter(habit => !habit.isChecked).length);
         });
 
-        return () => unsubscribe(); // Clean up listener on component unmount
+        return () => unsubscribe();
       }
     };
 
     loadHabits();
-  }, []);
+  }, [date]);
 
   return (
     <SafeAreaView style={styles.main}>
@@ -46,32 +73,32 @@ export default function Habits() {
         <View style={styles.logoContainer}>
           <Image
             source={require('../../assets/images/Locked-In-Logo.png')}
-            style={{
-              height: 60,
-              width: 55,
-              left: 0,
-            }}
+            style={styles.logoImage}
           />
           <Text style={styles.logoText}>locked in</Text>
         </View>
 
         <View style={styles.dateScroll}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleDateLeft}
+          hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
+          >
             <AntDesign name="left" size={20} color="white" />
           </TouchableOpacity>
           
-          <Text style={styles.dateText}>today</Text>
+          <Text style={styles.dateText}>{date === today ? 'TODAY' : date}</Text>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleDateRight}
+          hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
+          >
             <AntDesign name="right" size={20} color="white" />
           </TouchableOpacity>
         </View>
       </View>
-
+      
       {userHabits.length === 0 ? (
-        <EmptyHabits />
+        <EmptyHabits date={date} />
       ) : (
-        <HabitsScrollView habits={userHabits} remainingTasks={remainingTasks}/>
+        <HabitsScrollView habits={userHabits} remainingTasks={remainingTasks} date={date} />
       )}
     </SafeAreaView>
   );
@@ -92,6 +119,11 @@ const styles = StyleSheet.create({
   logoContainer: {
     flexDirection: 'row',
     alignSelf: 'center',
+  },
+  logoImage: {
+    height: 60,
+    width: 55,
+    left: 0,
   },
   logoText: {
     fontFamily: 'JockeyOne',

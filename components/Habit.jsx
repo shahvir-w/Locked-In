@@ -7,7 +7,11 @@ import { db } from '../configs/FirebaseConfig';
 
 const Habit = (props) => {
     const [isChecked, setIsChecked] = useState(props.checked);
+    
+    
     const toggleCheckBox = async () => {
+        if (props.isPastDate) return;
+        
         setIsChecked(!isChecked);
       
         // Update the habit in Firestore
@@ -25,6 +29,7 @@ const Habit = (props) => {
             </View>
             <TouchableOpacity 
                 onPress={toggleCheckBox}
+                hitSlop={{ top: 40, bottom: 40, left: 40, right: 40 }}
             >
                 {HabitIcons[isChecked.toString()]()}
             </TouchableOpacity>

@@ -4,22 +4,28 @@ import Habit from './Habit';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 
-export default function HabitsScrollView({ habits, remainingTasks }) {
+export default function HabitsScrollView({ habits, remainingTasks, date }) {
   const router = useRouter();
 
   const handleAddHabit = () => {
     router.push('create-habits');
   };
 
+  const today = new Date().toLocaleDateString('en-CA'); // Get today's date in "YYYY-MM-DD" format
+  const isPastDate = date < today; // Check if the selected date is in the past
+
   return (
     <ScrollView style={styles.ItemsWrapper}>
-      <Text style={styles.tasksText}>
-        {remainingTasks > 1 
+      <Text style={[styles.tasksText, isPastDate && styles.viewOnlyText]}>
+        {isPastDate 
+          ? 'VIEW ONLY'
+          : remainingTasks > 1 
           ? `you have ${remainingTasks} tasks remaining`
           : remainingTasks === 1 
           ? `you have ${remainingTasks} task remaining`
           : 'well done! all tasks completed!'}
       </Text>
+
 
       <View style={styles.items}>
         {habits
@@ -30,15 +36,21 @@ export default function HabitsScrollView({ habits, remainingTasks }) {
               number={habit.importance}
               text={habit.name}
               checked={habit.isChecked}
+              isPastDate={isPastDate}
             />
           ))}
       </View>
 
-      <Text style={styles.deleteText}>swipe left on task to delete</Text>
+      {!isPastDate && (
+        <>
+          <Text style={styles.deleteText}>swipe left on task to delete</Text>
 
-      <TouchableOpacity style={styles.addButton} onPress={handleAddHabit}>
-        <Ionicons name="add-circle-sharp" size={60} color="#7C81FC" />
-      </TouchableOpacity>
+          <TouchableOpacity style={styles.addButton} onPress={handleAddHabit}>
+            <Ionicons name="add-circle-sharp" size={60} color="#7C81FC" />
+          </TouchableOpacity>
+        </>
+      )}
+      
     </ScrollView>
   );
 }
@@ -53,6 +65,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 17,
     color: '#fff',
+  },
+  viewOnlyText: {
+    color: '#FFD700',
+    fontSize: 20,
   },
   items: {
     alignItems: 'center',

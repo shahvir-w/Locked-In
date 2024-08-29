@@ -3,8 +3,11 @@ import React from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 
-export default function EmptyHabits() {
+export default function EmptyHabits({ date }) {
   const router = useRouter();
+
+  const today = new Date().toLocaleDateString('en-CA'); // Get today's date in "YYYY-MM-DD" format
+  const isPastDate = date < today; // Check if the selected date is in the past
 
   const handleAddHabit = () => {
     router.push('create-habits');
@@ -12,13 +15,18 @@ export default function EmptyHabits() {
 
   return (
     <ScrollView style={styles.ItemsWrapper}>
-      <Text style={styles.emptyText}>
-        you have no habits, click the plus {'\n'} below to add some
+      <Text style={[styles.emptyText, isPastDate && styles.viewOnlyText]}>
+      {isPastDate 
+          ? 'NO DATA...\n ...you forgot to open the app'
+          : "you have no habits, click the plus \nbelow to add some" }
       </Text>
 
-      <TouchableOpacity style={styles.addButton} onPress={handleAddHabit}>
-        <Ionicons name="add-circle-sharp" size={60} color="#7C81FC" />
-      </TouchableOpacity>
+      {!isPastDate && (
+        <TouchableOpacity style={styles.addButton} onPress={handleAddHabit}>
+          <Ionicons name="add-circle-sharp" size={60} color="#7C81FC" />
+        </TouchableOpacity>
+      )}
+
     </ScrollView>
   );
 }
@@ -34,6 +42,10 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: '#fff',
     lineHeight: 25,
+  },
+    viewOnlyText: {
+    color: '#FFD700',
+    fontSize: 20,
   },
   addButton: {
     marginTop: 10,
