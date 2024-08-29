@@ -39,13 +39,13 @@ const styles = StyleSheet.create({
   emptyText: {
     fontFamily: 'aldrich',
     textAlign: 'center',
-    fontSize: 17,
+    fontSize: 18,
     color: '#fff',
     lineHeight: 25,
   },
     viewOnlyText: {
     color: '#FFD700',
-    fontSize: 20,
+    fontSize: 18,
   },
   addButton: {
     marginTop: 10,

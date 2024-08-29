@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import useOldestDate from '../../backend/FindOldestDate';
 import useMostRecentDate from '../../backend/FindRecentDate';
 import { duplicateHabits } from '../../backend/DuplicateHabits';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function Habits() {
   const [userHabits, setUserHabits] = useState([]);
@@ -68,39 +69,41 @@ export default function Habits() {
   }, [date]);
 
   return (
-    <SafeAreaView style={styles.main}>
-      <View style={styles.header}>
-        <View style={styles.logoContainer}>
-          <Image
-            source={require('../../assets/images/Locked-In-Logo.png')}
-            style={styles.logoImage}
-          />
-          <Text style={styles.logoText}>locked in</Text>
-        </View>
+    <GestureHandlerRootView>
+      <SafeAreaView style={styles.main}>
+        <View style={styles.header}>
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('../../assets/images/Locked-In-Logo.png')}
+              style={styles.logoImage}
+            />
+            <Text style={styles.logoText}>locked in</Text>
+          </View>
 
-        <View style={styles.dateScroll}>
-          <TouchableOpacity onPress={handleDateLeft}
-          hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
-          >
-            <AntDesign name="left" size={20} color="white" />
-          </TouchableOpacity>
-          
-          <Text style={styles.dateText}>{date === today ? 'TODAY' : date}</Text>
+          <View style={styles.dateScroll}>
+            <TouchableOpacity onPress={handleDateLeft}
+            hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
+            >
+              <AntDesign name="left" size={20} color="white" />
+            </TouchableOpacity>
+            
+            <Text style={styles.dateText}>{date === today ? 'TODAY' : date}</Text>
 
-          <TouchableOpacity onPress={handleDateRight}
-          hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
-          >
-            <AntDesign name="right" size={20} color="white" />
-          </TouchableOpacity>
+            <TouchableOpacity onPress={handleDateRight}
+            hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
+            >
+              <AntDesign name="right" size={20} color="white" />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-      
-      {userHabits.length === 0 ? (
-        <EmptyHabits date={date} />
-      ) : (
-        <HabitsScrollView habits={userHabits} remainingTasks={remainingTasks} date={date} />
-      )}
-    </SafeAreaView>
+        
+        {userHabits.length === 0 ? (
+          <EmptyHabits date={date} />
+        ) : (
+          <HabitsScrollView habits={userHabits} remainingTasks={remainingTasks} date={date} />
+        )}
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
 

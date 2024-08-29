@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Vibration } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, } from 'react-native';
 import { HabitIcons } from '@/constants/icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { doc, setDoc } from 'firebase/firestore';
@@ -20,7 +20,7 @@ const Habit = (props) => {
         const habitRef = doc(db, 'users', uid, 'days', today, 'habits', props.text);
         await setDoc(habitRef, { isChecked: !isChecked }, { merge: true });
     };
-
+    
     return (
         <View style={[styles.item, isChecked && styles.checkedItem]}>
             <View style={styles.itemBox}>

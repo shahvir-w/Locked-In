@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import Habit from './Habit';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
@@ -14,8 +14,23 @@ export default function HabitsScrollView({ habits, remainingTasks, date }) {
   const today = new Date().toLocaleDateString('en-CA'); // Get today's date in "YYYY-MM-DD" format
   const isPastDate = date < today; // Check if the selected date is in the past
 
-  return (
-    <ScrollView style={styles.ItemsWrapper}>
+  const sortedHabits = habits.sort((a, b) => b.importance - a.importance);
+
+  // Define a renderItem function for FlatList
+  
+  const renderItem = ({ item }) => (
+      <Habit
+        key={item.id}
+        number={item.importance}
+        text={item.name}
+        checked={item.isChecked}
+        isPastDate={isPastDate}
+      />
+  );
+
+  // Define a header function for FlatList
+  const ListHeader = () => (
+    <View>
       <Text style={[styles.tasksText, isPastDate && styles.viewOnlyText]}>
         {isPastDate 
           ? 'VIEW ONLY'
@@ -25,22 +40,12 @@ export default function HabitsScrollView({ habits, remainingTasks, date }) {
           ? `you have ${remainingTasks} task remaining`
           : 'well done! all tasks completed!'}
       </Text>
+    </View>
+  );
 
-
-      <View style={styles.items}>
-        {habits
-          .sort((a, b) => b.importance - a.importance) // Sort habits by importance in descending order
-          .map((habit, index) => (
-            <Habit
-              key={habit.id}
-              number={habit.importance}
-              text={habit.name}
-              checked={habit.isChecked}
-              isPastDate={isPastDate}
-            />
-          ))}
-      </View>
-
+  // Define a footer function for FlatList
+  const ListFooter = () => (
+    <View>
       {!isPastDate && (
         <>
           <Text style={styles.deleteText}>swipe left on task to delete</Text>
@@ -50,34 +55,41 @@ export default function HabitsScrollView({ habits, remainingTasks, date }) {
           </TouchableOpacity>
         </>
       )}
-      
-    </ScrollView>
+    </View>
+  );
+
+  return (
+    <FlatList
+      data={sortedHabits}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id}
+      contentContainerStyle={styles.items}
+      ListHeaderComponent={ListHeader}
+      ListFooterComponent={ListFooter}
+    /> 
   );
 }
 
 const styles = StyleSheet.create({
-  ItemsWrapper: {
-    paddingTop: 15,
-    paddingHorizontal: 20,
-  },
-  tasksText: {
-    fontFamily: 'aldrich',
-    textAlign: 'center',
-    fontSize: 17,
-    color: '#fff',
-  },
-  viewOnlyText: {
-    color: '#FFD700',
-    fontSize: 20,
-  },
   items: {
     alignItems: 'center',
     marginTop: 20,
   },
+  tasksText: {
+    fontFamily: 'aldrich',
+    textAlign: 'center',
+    fontSize: 18,
+    color: '#fff',
+    marginBottom: 20,
+  },
+  viewOnlyText: {
+    color: '#FFD700',
+    fontSize: 18,
+  },
   deleteText: {
     fontFamily: 'aldrich',
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: 15,
     color: '#808080',
     marginBottom: 5,
   },
