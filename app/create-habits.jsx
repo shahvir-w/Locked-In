@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Pressa
 import React, { useState } from 'react';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useRouter } from 'expo-router';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../configs/FirebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -28,8 +28,19 @@ export default function CreateHabit() {
           importance: importance,
           isChecked: false,
         });
+
+        
+        const dayRef = doc(db, 'users', user, 'days', today);
+        const daySnapshot = await getDoc(dayRef);
+        if (daySnapshot.exists()) {
+          const currentAvailableScore = daySnapshot.data().availableScore;
+          const newAvailableScore = currentAvailableScore + importance;
+
+          await updateDoc(dayRef, {availableScore: newAvailableScore });
+        }
         router.back();
       }
+
     } catch (error) {
       console.error('Error adding habit:', error);
     }
@@ -107,11 +118,11 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   input: {
-    placeholderTextColor:"#949494",
-    selectionColor:"#949494",
+    placeholderTextColor:"#D3D3D3",
+    selectionColor:"#D3D3D3",
     fontFamily: 'Shippori',
     fontSize: 15,
-    color: "#949494",
+    color: "#D3D3D3",
     padding: 15,
     backgroundColor: "#272424",
     height: 50,

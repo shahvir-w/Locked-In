@@ -8,7 +8,7 @@ import { collection, query, onSnapshot } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useOldestDate from '../../backend/FindOldestDate';
 import useMostRecentDate from '../../backend/FindRecentDate';
-import { duplicateHabits } from '../../backend/DuplicateHabits';
+import { initializeFirstDay, duplicateHabits } from '../../backend/CreateDays';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function Habits() {
@@ -20,13 +20,24 @@ export default function Habits() {
   const mostRecentDate = useMostRecentDate();
 
   useEffect(() => {
-    const checkAndDuplicate = async () => {
-      if (mostRecentDate && today !== mostRecentDate) {
+    const checkFirstDay = async () => {
+      if (mostRecentDate == "no data") {
+        await initializeFirstDay(today);
+      }
+    };
+
+    checkFirstDay();
+  }, [mostRecentDate]);
+
+
+  useEffect(() => {
+    const duplicate = async () => {
+      if (mostRecentDate && today !== mostRecentDate && mostRecentDate != "no data") {
         await duplicateHabits(mostRecentDate, today);
       }
     };
 
-    checkAndDuplicate();
+    duplicate();
   }, [mostRecentDate, today]);
 
   const modifyDate = (dateString, days) => {
@@ -139,6 +150,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     left: -15,
+    top: 2,
   },
   dateText: {
     fontFamily: 'aldrich',

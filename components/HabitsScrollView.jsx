@@ -11,7 +11,7 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import Habit from './Habit';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
-import { doc, deleteDoc } from 'firebase/firestore';
+import { doc, deleteDoc, getDoc, updateDoc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { db } from '../configs/FirebaseConfig';
 
@@ -20,15 +20,48 @@ export default function HabitsScrollView({ habits, remainingTasks, date }) {
 
   const today = new Date().toLocaleDateString('en-CA');
   const isPastDate = date < today;
+  let deleteInProgress = false;
 
   const handleDelete = async (name) => {
+    if (deleteInProgress) return;
+    deleteInProgress = true;
+
     const user = await AsyncStorage.getItem('userUID');
+    const today = new Date().toLocaleDateString('en-CA');
+    const habitRef = doc(db, 'users', user, 'days', today, 'habits', name);
+    
     try {
-      await deleteDoc(doc(db, 'users', user, 'days', today, 'habits', name))
+        const habitSnapshot = await getDoc(habitRef);
+        if (habitSnapshot.exists()) {
+            const habitData = habitSnapshot.data();
+            const importance = habitData.importance;
+            const isChecked = habitData.isChecked;
+            
+            // Adjust the availableScore and completionScore
+            const dayRef = doc(db, 'users', user, 'days', today);
+            const daySnapshot = await getDoc(dayRef);
+            if (daySnapshot.exists()) {
+                const dayData = daySnapshot.data();
+                const newAvailableScore = dayData.availableScore - importance;
+                const newCompletionScore = isChecked 
+                    ? dayData.completionScore - importance 
+                    : dayData.completionScore;
+                
+                await updateDoc(dayRef, {
+                    availableScore: newAvailableScore,
+                    completionScore: newCompletionScore,
+                });
+            }
+
+            // Delete the habit
+            await deleteDoc(habitRef);
+        }
     } catch (error) {
-      console.error("Error removing document: ", error);
+        console.error("Error removing document: ", error);
+    } finally {
+        deleteInProgress = false; // Reset the flag after the operation is complete
     }
-  };
+};
 
   const onSwipeValueChange = (swipeData) => {
     if (isPastDate) return;
@@ -41,7 +74,7 @@ export default function HabitsScrollView({ habits, remainingTasks, date }) {
         // Add a 500ms buffer before deleting the habit after swipe
         setTimeout(() => {
             handleDelete(key);
-        }, 250); // 500 milliseconds buffer
+        }, 200); // 500 milliseconds buffer
     }
 };
 

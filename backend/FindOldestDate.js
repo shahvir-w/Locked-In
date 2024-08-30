@@ -27,14 +27,10 @@ export default function useOldestDate() {
             setDate(oldestDate);
           } else {
             // Handle the case where there are no documents
-            const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD" format
-            setDate(today);
+            setDate("no data");
           }
         } catch (error) {
           console.error("Error fetching oldest date:", error);
-          // Optionally handle the error, e.g., set current date to today
-          const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD" format
-          setDate(today);
         }
       }
     };

@@ -29,17 +29,11 @@ export default function useMostRecentDate() {
             const mostRecentDate = dates[0];
             setCurrentDate(mostRecentDate);
           } else {
-            // Handle the case where there are no documents
-            const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD" format
-            setCurrentDate(today);
+            setCurrentDate("no data");
           }
 
         } catch (error) {
           console.error("Error fetching most recent date:", error);
-          // Optionally handle the error, e.g., set current date to today
-          const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD" format
-          setCurrentDate(today);
-
         }
       }
     };
