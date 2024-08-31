@@ -8,26 +8,34 @@ import { db } from '../configs/FirebaseConfig';
 const Habit = (props) => {
     const [isChecked, setIsChecked] = useState(props.checked);
     
+    const [isLoading, setIsLoading] = useState(false);
     const toggleCheckBox = async () => {
-        if (props.isPastDate) return;
-    
-        const newCheckedState = !isChecked;
-        setIsChecked(newCheckedState);
-    
-        // Update the habit in Firestore
-        const uid = await AsyncStorage.getItem('userUID');
-        const today = new Date().toLocaleDateString('en-CA');
-        const habitRef = doc(db, 'users', uid, 'days', today, 'habits', props.text);
-        await setDoc(habitRef, { isChecked: newCheckedState }, { merge: true });
-    
-        const dayRef = doc(db, 'users', uid, 'days', today);
-        const daySnapshot = await getDoc(dayRef);
-    
-        if (daySnapshot.exists()) {
-            const currentCompletionScore = daySnapshot.data().completionScore || 0;
-            const scoreAdjustment = newCheckedState ? props.number : -props.number;
-            const newCompletionScore = currentCompletionScore + scoreAdjustment;
-            await updateDoc(dayRef, { completionScore: newCompletionScore });
+        if (props.isPastDate || isLoading) return;
+
+        setIsLoading(true); // Set loading state to true to disable further interactions
+
+        try {
+            const newCheckedState = !isChecked;
+            setIsChecked(newCheckedState);
+
+            const uid = await AsyncStorage.getItem('userUID');
+            const today = new Date().toLocaleDateString('en-CA');
+            const habitRef = doc(db, 'users', uid, 'days', today, 'habits', props.text);
+            await setDoc(habitRef, { isChecked: newCheckedState }, { merge: true });
+
+            const dayRef = doc(db, 'users', uid, 'days', today);
+            const daySnapshot = await getDoc(dayRef);
+
+            if (daySnapshot.exists()) {
+                const currentCompletionScore = daySnapshot.data().completionScore || 0;
+                const scoreAdjustment = newCheckedState ? props.number : -props.number;
+                const newCompletionScore = currentCompletionScore + scoreAdjustment;
+                await updateDoc(dayRef, { completionScore: newCompletionScore });
+            }
+        } catch (error) {
+            console.error("Error updating completion score:", error);
+        } finally {
+            setIsLoading(false); // Reset loading state to allow interactions again
         }
     };
     

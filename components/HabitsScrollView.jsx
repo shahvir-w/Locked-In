@@ -71,10 +71,9 @@ export default function HabitsScrollView({ habits, remainingTasks, date }) {
     const swipeThreshold = -Dimensions.get('window').width / 1.75;
 
     if (value < swipeThreshold) {
-        // Add a 500ms buffer before deleting the habit after swipe
         setTimeout(() => {
             handleDelete(key);
-        }, 200); // 500 milliseconds buffer
+        }, 100);
     }
 };
 
@@ -184,7 +183,7 @@ const styles = StyleSheet.create({
     },
     rowBack: {
         alignItems: 'center',
-        backgroundColor: '#8B0000',
+        backgroundColor: '#781414',
         flexDirection: 'row',
         paddingRight: 15,
         height: 58,
@@ -200,7 +199,7 @@ const styles = StyleSheet.create({
       right: 0,
       width: 55,
       height: '100%',
-      backgroundColor: '#8B0000',
+      backgroundColor: '#781414',
       borderRadius: 15,
   },
 });

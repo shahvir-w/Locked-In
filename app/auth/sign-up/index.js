@@ -97,10 +97,10 @@ export default function SignIn() {
                         left: 10,
                         textAlign: 'left',
                         top: -25,
-                    }}>Name</Text>
+                    }}>First Name</Text>
                     <TextInput 
                         style={[styles.input]}
-                        placeholder="Enter your name"
+                        placeholder="Enter your first name"
                         onChangeText={(text)=>setName(text)}    
                     />
                     </View>
