@@ -23,7 +23,9 @@ export default function RootLayout() {
         name="create-habits" 
         options={{
           ...TransitionPresets.ModalSlideFromBottomIOS, // Custom transition for this screen
-        }} 
+          gestureEnabled: true 
+        }}
+        
       />
     </Stack>
   );

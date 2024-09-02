@@ -5,6 +5,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../configs/FirebaseConfig';
 
+
+
 const Habit = (props) => {
     const [isChecked, setIsChecked] = useState(props.checked);
     
@@ -65,7 +67,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: 20,
+        marginBottom: 30,
     },
     checkedItem: {
         backgroundColor: "#7C81FC",

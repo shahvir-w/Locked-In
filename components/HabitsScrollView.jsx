@@ -149,10 +149,10 @@ export default function HabitsScrollView({ habits, remainingTasks, date }) {
       ListFooterComponent={ListFooter}
       useNativeDriver={false}
       contentContainerStyle={styles.items}
+      showsVerticalScrollIndicator={false}
     />
   );
 }
-
 
 const styles = StyleSheet.create({
     items: {

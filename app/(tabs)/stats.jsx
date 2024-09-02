@@ -7,13 +7,24 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { db } from '../../configs/FirebaseConfig';
 import useMostRecentDate from '../../backend/FindRecentDate';
 import { calculateDaysToLockedIn } from '../../backend/CreateDays';
+import LockedInChart from '../../components/ProgressChart';
+import CompletionScoreChart from '../../components/BarChart';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 export default function Stats() {
   const mostRecentDate = useMostRecentDate();
   const [score, setScore] = useState(0);
   const [name, setName] = useState('');
   const [daysTillLockedIn, setDaysTillLockedIn] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
 
+  const [refreshTrigger, setRefreshTrigger] = useState(false);
+
+  // Function to toggle refresh
+  const triggerRefresh = () => {
+    setRefreshTrigger(prev => !prev);
+  };
+  
   useEffect(() => {
     const fetchUserData = async () => {
       const uid = await AsyncStorage.getItem('userUID');
@@ -27,13 +38,13 @@ export default function Stats() {
         }
 
         // Fetch lockedInScore
-        const date = '2024-08-30';
-        const dateRef = doc(db, 'users', uid, 'days', date);
+        const dateRef = doc(db, 'users', uid, 'days', mostRecentDate);
         const dateSnap = await getDoc(dateRef);
         if (dateSnap.exists()) {
           const dateData = dateSnap.data();
           lockedInScore = dateData.lockedInScore
           streak = dateData.streak
+          setCurrentStreak(streak)
 
           daysTillLockedInCalc = calculateDaysToLockedIn(lockedInScore, streak);
           setDaysTillLockedIn(daysTillLockedInCalc)
@@ -57,7 +68,7 @@ export default function Stats() {
           </View>
           <Text style={styles.labelText}>STATISTICS</Text>
         </View>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.progressContainer}>
           <Text style={styles.progressText}>
             {name}, you are{'\n'}
@@ -87,8 +98,15 @@ export default function Stats() {
             duration={700}
           />
 
+          <Text style={styles.deleteText}>score is updated once each day</Text>
+          </View>
+
+          <View style={styles.lineChart}>
+            <LockedInChart/>
+          </View>
+
           {daysTillLockedIn > 0 && (
-            <Text style={styles.daysText}>
+            <Text style={styles.regularText}>
             complete 100% of daily tasks {'\n'} for 
             <Text style={styles.purpleText}>
             {' '}{daysTillLockedIn.toString().padStart(2, '0')}
@@ -98,14 +116,27 @@ export default function Stats() {
           </Text>
           )}
           {daysTillLockedIn == 0 && (
-            <Text style={styles.daysText}>
+            <Text style={styles.regularText}>
             keep completing daily {'\n'}tasks to stay
             <Text style={styles.purpleText}> locked in</Text>
           </Text>
           )}
-
-        
+          
+          <View style={styles.barChart}>
+            <CompletionScoreChart refreshTrigger={refreshTrigger}/>
           </View>
+
+          <View style={styles.currentStreak}>
+          <MaterialCommunityIcons name="fire" size={35} color='#7C81FC' />
+          <Text style={styles.regularText}>
+            current streak:{' '}
+            <Text style={styles.purpleText}>
+            {currentStreak < 0 ? "n/a" : currentStreak.toString().padStart(2, '0')}
+            </Text>
+            {' '}{currentStreak > 1 ? "days" : currentStreak == 1 ? "day" : ""}
+          </Text>
+          </View>
+
 
       </ScrollView>
     </SafeAreaView>
@@ -147,6 +178,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 18,
     top: 4,
   },
+  deleteText: {
+    fontFamily: 'aldrich',
+    textAlign: 'center',
+    fontSize: 15,
+    color: '#808080',
+    marginTop: 18,
+},
   progressContainer: {
     marginTop: 15,
     justifyContent: 'center',
@@ -159,17 +197,39 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textAlign: 'center',
   },
-  daysText: {
+  regularText: {
     fontFamily: 'Aldrich',
     color: "#fff",
-    fontSize: 20,
-    lineHeight: 35,
+    fontSize: 18,
+    lineHeight: 30,
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 30,
+    marginBottom: 25,
   },
   purpleText: {
     color: '#7C81FC',
     fontFamily: 'Aldrich',
     fontSize: 20,
   },
+  lineChart: {
+    width: 300,
+    height: 180,
+    alignSelf: 'center',
+    marginTop: 30,
+    marginBottom: 60,
+    
+  },
+  barChart: {
+    width: 300,
+    height: 180,
+    alignSelf: 'center',
+    marginBottom: 60,
+  },
+  currentStreak: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginBottom: 50,
+  }
 });
