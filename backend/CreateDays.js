@@ -2,27 +2,63 @@ import { collection, getDocs, setDoc, doc, getDoc } from 'firebase/firestore';
 import { db } from '../configs/FirebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 export const initializeFirstDay = async (date) => {
   const uid = await AsyncStorage.getItem('userUID');
+  
+  if (!uid) {
+    console.error('User UID is not found.');
+    return;
+  }
 
-  const targetDateRef = doc(db, 'users', uid, 'days', date);
-    await setDoc(targetDateRef, {
+  // Convert string date (if necessary) to a Date object
+  const targetDate = typeof date === 'string' ? new Date(date) : date;
+
+  const formattedTargetDate = targetDate.toISOString().split('T')[0]; // Format as "YYYY-MM-DD"
+  const targetDateRef = doc(db, 'users', uid, 'days', formattedTargetDate);
+
+  // Initialize the target date document with the required fields
+  await setDoc(targetDateRef, {
+    completionScore: 0,
+    availableScore: 0,
+    streak: 0,
+    lockedInScore: 0,
+  });
+
+  // Determine the start of the week (1 day in the past)
+  const dayOfWeek = targetDate.getDay();
+  const startOfWeek = new Date(targetDate);
+  startOfWeek.setDate(targetDate.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1) - 1); // Move back by 1 extra day
+
+  // Get days between start of the week and target date
+  const daysInBetween = getDaysBetweenDates(startOfWeek, targetDate);
+
+  // Loop through the days between startOfWeek and targetDate to initialize each day's document
+  for (let i = 0; i <= daysInBetween; i++) {
+    const intermediateDate = new Date(startOfWeek);
+    intermediateDate.setDate(startOfWeek.getDate() + i);
+    const formattedIntermediateDate = intermediateDate.toISOString().split('T')[0]; // Format as "YYYY-MM-DD"
+
+    const intermediateDateRef = doc(db, 'users', uid, 'days', formattedIntermediateDate);
+
+    // Set the document for each intermediate day
+    await setDoc(intermediateDateRef, {
       completionScore: 0,
       availableScore: 0,
       streak: 0,
-      lockedInScore: 0});
-}
+      lockedInScore: 0,
+    });
+  }
+};
 
 
 // Helper function to calculate the Fibonacci value based on the streak
 const fibonacci = (n) => {
   if (n === 0) return 0;
-  if (n === 1 || n === -1) return 2;
-  if (n === 2 || n === -2) return 3;
+  if (n === 1 || n === -1) return 1;
+  if (n === 2 || n === -2) return 2;
 
   let absN = Math.abs(n);
-  let fib = [2, 3];
+  let fib = [1, 2];
   for (let i = 2; i < absN; i++) {
     fib[i] = fib[i - 1] + fib[i - 2];
   }
@@ -31,8 +67,25 @@ const fibonacci = (n) => {
 };
 
 
+export function getDaysBetweenDates(date1, date2) {
+  // Reset the time part of both dates to midnight
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+  
+  // Calculate the difference in milliseconds
+  const timeDifference = Math.abs(d2 - d1); // absolute difference in time
+  
+  // Convert milliseconds to days
+  const dayDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+  
+  return dayDifference;
+}
+
+
 // Function for duplicating habits
 export const duplicateHabits = async (sourceDate, targetDate) => {
+  const daysInBetween = (getDaysBetweenDates(sourceDate, targetDate));
+
   try {
     const uid = await AsyncStorage.getItem('userUID');
     if (uid) {
@@ -46,45 +99,61 @@ export const duplicateHabits = async (sourceDate, targetDate) => {
         const currentLockedInScore = sourceDateData.lockedInScore;
         let currentStreak = sourceDateData.streak;
 
-        // Calculate daily score
-        const dailyScore = completionScore / currentAvailableScore;
-        if (dailyScore <= 0.1) dailyScore = 0.1;
-        
-        // Adjust streak based on daily score
-        if (currentStreak >= 0 && dailyScore > 0.9) {
-          currentStreak = currentStreak + 1;
-        } else if (currentStreak <= 0 && dailyScore > 0.9) {
-          currentStreak = 1
-        } else if (currentStreak >= 0 && dailyScore < 0.9) {
-          currentStreak = -1
-        } else if (currentStreak < 0 && dailyScore < 0.9) {
-          currentStreak = currentStreak + 1;
-        }
+        for (let i = 1; i <= daysInBetween; i++) {
+          // Calculate daily score
+          var dailyScore;
+          if (currentAvailableScore == 0) {
+            var dailyScore = 0
+          } else {
+            dailyScore = completionScore / currentAvailableScore;
+          }
+          
+          if (dailyScore <= 0.1) dailyScore = 0.1;
 
-        // Calculate Fibonacci value based on the current streak
-        const fibValue = fibonacci(currentStreak);
+          const intermediateDate = new Date(sourceDate);
+          intermediateDate.setDate(intermediateDate.getDate() + i);
+          const formattedDate = intermediateDate.toISOString().split('T')[0]; // Format as "YYYY-MM-DD"
+
+          // Adjust streak based on daily score
+          if (currentStreak >= 0 && dailyScore > 0.9) {
+            currentStreak = currentStreak + 1;
+          } else if (currentStreak <= 0 && dailyScore > 0.9) {
+            currentStreak = 1
+          } else if (currentStreak >= 0 && dailyScore < 0.9) {
+            currentStreak = -1
+          } else if (currentStreak < 0 && dailyScore < 0.9) {
+            currentStreak = currentStreak - 1;
+          }
+          
+          // Calculate Fibonacci value based on the current streak
+          const fibValue = fibonacci(currentStreak);
 
         // Calculate new LockedInScore
-        let newLockedInScore = currentLockedInScore;
-        if (dailyScore > 0.9) {
-          newLockedInScore = currentLockedInScore + (fibValue * dailyScore)
-        } else {
-          newLockedInScore = currentLockedInScore - (fibValue / dailyScore)
-        }
+          let newLockedInScore = currentLockedInScore;
+          if (dailyScore > 0.9) {
+            newLockedInScore = currentLockedInScore + (fibValue * dailyScore)
+          } else {
+            newLockedInScore = currentLockedInScore - (fibValue / dailyScore)
+          }
+          
+          if (newLockedInScore > 100) newLockedInScore = 100;
+          if (newLockedInScore < 0) newLockedInScore = 0;
         
-        if (newLockedInScore > 100) newLockedInScore = 100;
-        if (newLockedInScore < 0) newLockedInScore = 0;
+        
+          const intermediateDateRef = doc(db, 'users', uid, 'days', formattedDate);
+          await setDoc(intermediateDateRef, {
+            completionScore: 0,
+            availableScore: 0,
+            streak: currentStreak,
+            lockedInScore: newLockedInScore,
+          });
+          console.log(`New dailyScore: ${dailyScore}`);
+          console.log(`New streakk: ${currentStreak}`);
+          console.log(`New LockedInScore: ${newLockedInScore}`);
+        } 
 
         // Update the target day's document with the new scores and streak
-        const targetDateRef = doc(db, 'users', uid, 'days', targetDate);
-        await setDoc(targetDateRef, {
-          completionScore: 0,
-          availableScore: currentAvailableScore,
-          streak: currentStreak,
-          lockedInScore: newLockedInScore
-        });
-
-        console.log(`Scores updated. New LockedInScore: ${newLockedInScore}`);
+        
       }
       
       // Reference to the source date's habits

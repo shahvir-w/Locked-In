@@ -9,16 +9,8 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import useOldestDate from '../backend/FindOldestDate';
 import Habit from './Habit';
 
-export default function CompletionScoreChart() {
-  const [barData, setBarData] = useState([
-    { value: 0, label: 'M' },
-    { value: 0, label: 'T' },
-    { value: 0, label: 'W' },
-    { value: 0, label: 'T' },
-    { value: 0, label: 'F' },
-    { value: 0, label: 'S' },
-    { value: 0, label: 'S' }
-  ]);
+export default function CompletionScoreChart( {refresh} ) {
+  const [barData, setBarData] = useState([]);
 
   const today = new Date();
   const [day, setDay] = useState(today);
@@ -44,7 +36,8 @@ export default function CompletionScoreChart() {
   const handleDateLeft = () => {
     const newDate = new Date(day);
     newDate.setDate(day.getDate() - 7); // Move one week back
-    if (newDate >= oldestDate) setDate(newDate);
+    const oldestStartDay = (determineDate(new Date("2024-09-07")));
+    if (newDate > oldestStartDay) setDay(newDate);
   };
 
   const handleDateRight = () => {
@@ -57,30 +50,47 @@ export default function CompletionScoreChart() {
     const fetchCompletionScores = async () => {
       const startOfWeek = determineDate(day);
       const uid = await AsyncStorage.getItem('userUID');
-      const updatedBarData = [...barData];
-
-      for (let i = 0; i < 7; i++) {
+      const updatedBarData = [];
+      
+      const datesForWeek = Array.from({ length: 7 }, (_, i) => {
         const date = new Date(startOfWeek);
         date.setDate(startOfWeek.getDate() + i);
+        return {
+          formattedDate: date.toLocaleDateString('en-CA'),
+          label: date.toLocaleDateString('en-US', { weekday: 'short' })[0],
+        };
+      });
 
-        const formattedDate = date.toLocaleDateString('en-CA');
+      const fetchPromises = datesForWeek.map(({ formattedDate }) => {
         const dateRef = doc(db, 'users', uid, 'days', formattedDate);
-        const dateSnap = await getDoc(dateRef);
+        return getDoc(dateRef);
+      });
 
+      const dateSnaps = await Promise.all(fetchPromises);
+
+      dateSnaps.forEach((dateSnap, index) => {
         if (dateSnap.exists()) {
           const dateData = dateSnap.data();
           const availableScore = dateData.availableScore;
           const completionScore = dateData.completionScore;
-          const dayScore = (completionScore / availableScore) * 100
-          updatedBarData[i].value = dayScore;
-        }
-      }
+          let dayScore; 
+          availableScore == 0 ? dayScore = 1 : completionScore == 0 ? dayScore = 1 : dayScore = (completionScore / availableScore) * 100
 
+          // Only push data if lockedInScore exists
+          if (dayScore !== undefined) {
+            updatedBarData.push({
+              value: dayScore,
+              label: datesForWeek[index].label,
+            });
+          }
+        }
+      });
+      
       setBarData(updatedBarData);
     };
 
     fetchCompletionScores();
-  }, [day]);
+  }, [day, refresh]);
 
   return (
     <View style={styles.container}>
@@ -109,8 +119,8 @@ export default function CompletionScoreChart() {
             height={110}
             width={262.75}
             maxValue={100}
-            barBorderTopRightRadius={5}
-            barBorderTopLeftRadius={5}
+            barBorderTopRightRadius={2.5}
+            barBorderTopLeftRadius={2.5}
             barWidth={11}
             spacing={24}
             frontColor='#7C81FC'

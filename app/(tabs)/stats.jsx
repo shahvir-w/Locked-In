@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, Image, ScrollView, RefreshControl } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CircularProgress from 'react-native-circular-progress-indicator';
@@ -10,20 +10,15 @@ import { calculateDaysToLockedIn } from '../../backend/CreateDays';
 import LockedInChart from '../../components/ProgressChart';
 import CompletionScoreChart from '../../components/BarChart';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { useRouter } from 'expo-router';
 
 export default function Stats() {
+  const router = useRouter();
   const mostRecentDate = useMostRecentDate();
   const [score, setScore] = useState(0);
   const [name, setName] = useState('');
   const [daysTillLockedIn, setDaysTillLockedIn] = useState(0);
   const [currentStreak, setCurrentStreak] = useState(0);
-
-  const [refreshTrigger, setRefreshTrigger] = useState(false);
-
-  // Function to toggle refresh
-  const triggerRefresh = () => {
-    setRefreshTrigger(prev => !prev);
-  };
   
   useEffect(() => {
     const fetchUserData = async () => {
@@ -56,6 +51,16 @@ export default function Stats() {
     fetchUserData();
   }, [mostRecentDate]);
 
+  const [refresh, setRefresh] = useState(false);
+  const pullMe = () => {
+    setRefresh(true)
+
+    
+    setTimeout(() => {
+      setRefresh(false)
+    }, 500)
+  }
+
   return (
     <SafeAreaView style={styles.main}>
         <View style={styles.header}>
@@ -68,7 +73,14 @@ export default function Stats() {
           </View>
           <Text style={styles.labelText}>STATISTICS</Text>
         </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView 
+      refreshControl={
+        <RefreshControl
+        refreshing={refresh}
+        onRefresh={() => pullMe()}
+        />
+      }
+      showsVerticalScrollIndicator={false}>
         <View style={styles.progressContainer}>
           <Text style={styles.progressText}>
             {name}, you are{'\n'}
@@ -100,11 +112,11 @@ export default function Stats() {
 
           <Text style={styles.deleteText}>score is updated once each day</Text>
           </View>
-
+          
           <View style={styles.lineChart}>
             <LockedInChart/>
           </View>
-
+            
           {daysTillLockedIn > 0 && (
             <Text style={styles.regularText}>
             complete 100% of daily tasks {'\n'} for 
@@ -123,20 +135,18 @@ export default function Stats() {
           )}
           
           <View style={styles.barChart}>
-            <CompletionScoreChart refreshTrigger={refreshTrigger}/>
+            <CompletionScoreChart refresh={refresh}/>
           </View>
-
           <View style={styles.currentStreak}>
           <MaterialCommunityIcons name="fire" size={35} color='#7C81FC' />
           <Text style={styles.regularText}>
             current streak:{' '}
             <Text style={styles.purpleText}>
-            {currentStreak < 0 ? "n/a" : currentStreak.toString().padStart(2, '0')}
+            {currentStreak <= 0 ? "00" : currentStreak.toString().padStart(2, '0')}
             </Text>
             {' '}{currentStreak > 1 ? "days" : currentStreak == 1 ? "day" : ""}
           </Text>
           </View>
-
 
       </ScrollView>
     </SafeAreaView>

@@ -13,7 +13,7 @@ export default function Info() {
           />
           <Text style={styles.logoText}>locked in</Text>
         </View>
-        <Text style={styles.labelText}>SETTINGS</Text>
+        <Text style={styles.labelText}>OTHER</Text>
       </View>
 
       </SafeAreaView>

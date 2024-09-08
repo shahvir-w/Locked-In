@@ -9,15 +9,8 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import useOldestDate from '../backend/FindOldestDate';
 
 export default function LockedInChart() {
-  const [lineData, setLineData] = useState([
-    { value: 0, label: 'M' },
-    { value: 0, label: 'T' },
-    { value: 0, label: 'W' },
-    { value: 0, label: 'T' },
-    { value: 0, label: 'F' },
-    { value: 0, label: 'S' },
-    { value: 0, label: 'S' }
-  ]);
+  
+  const [lineData, setLineData] = useState([]);
 
   const today = new Date();
   const [day, setDay] = useState(today);
@@ -25,7 +18,7 @@ export default function LockedInChart() {
   const [endDay, setEndDay] = useState("");
   const oldestDate = useOldestDate();
 
-  const determineDate = (selectedDay) => {
+   const determineDate = (selectedDay) => {
     const dayOfWeek = selectedDay.getDay();
     const startOfWeek = new Date(selectedDay);
     startOfWeek.setDate(selectedDay.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
@@ -39,43 +32,63 @@ export default function LockedInChart() {
 
     return startOfWeek;
   }
+
   
   const handleDateLeft = () => {
     const newDate = new Date(day);
     newDate.setDate(day.getDate() - 7); // Move one week back
-    if (newDate >= oldestDate) setDate(newDate);
+    const oldestStartDay = (determineDate(new Date("2024-09-07")));
+    if (newDate > oldestStartDay) setDay(newDate);
   };
 
   const handleDateRight = () => {
     const newDate = new Date(day);
-    newDate.setDate(day.getDate() + 7); // Move one week forward
-    if (newDate <= today) setDate(newDate);
+    newDate.setDate(day.getDate() + 7); // Move one week forwar
+    if (newDate <= today) setDay(newDate);
   };
 
   useEffect(() => {
     const fetchLockedInScores = async () => {
       const startOfWeek = determineDate(day);
       const uid = await AsyncStorage.getItem('userUID');
-      const updatedLineData = [...lineData];
-
-      for (let i = 0; i < 7; i++) {
+      const updatedLineData = [];
+  
+      // Precompute the dates for the week
+      const datesForWeek = Array.from({ length: 7 }, (_, i) => {
         const date = new Date(startOfWeek);
         date.setDate(startOfWeek.getDate() + i);
-
-        const formattedDate = date.toLocaleDateString('en-CA');
+        return {
+          formattedDate: date.toLocaleDateString('en-CA'),
+          label: date.toLocaleDateString('en-US', { weekday: 'short' })[0],
+        };
+      });
+  
+      // Fetch all lockedInScores for the week in parallel
+      const fetchPromises = datesForWeek.map(({ formattedDate }) => {
         const dateRef = doc(db, 'users', uid, 'days', formattedDate);
-        const dateSnap = await getDoc(dateRef);
-
+        return getDoc(dateRef);
+      });
+  
+      const dateSnaps = await Promise.all(fetchPromises);
+  
+      dateSnaps.forEach((dateSnap, index) => {
         if (dateSnap.exists()) {
           const dateData = dateSnap.data();
           const lockedInScore = dateData.lockedInScore;
-          updatedLineData[i].value = lockedInScore;
+  
+          // Only push data if lockedInScore exists
+          if (lockedInScore !== undefined) {
+            updatedLineData.push({
+              value: lockedInScore,
+              label: datesForWeek[index].label,
+            });
+          }
         }
-      }
-
+      });
+  
       setLineData(updatedLineData);
     };
-
+  
     fetchLockedInScores();
   }, [day]);
 
@@ -102,9 +115,8 @@ export default function LockedInChart() {
       <View style={[{ overflow: 'hidden' }, { width: 265 }]}>
         <LineChart
           disableScroll
-          isAnimated
           animateOnDataChange
-          animationDuration={1000}
+          //animationDuration={1}
           onDataChangeAnimationDuration={300}
           areaChart
           straight
