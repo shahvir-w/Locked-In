@@ -7,7 +7,6 @@ import { getDoc, doc } from 'firebase/firestore';
 import { db } from '../configs/FirebaseConfig';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import useOldestDate from '../backend/FindOldestDate';
-import Habit from './Habit';
 
 export default function CompletionScoreChart( {refresh} ) {
   const [barData, setBarData] = useState([]);

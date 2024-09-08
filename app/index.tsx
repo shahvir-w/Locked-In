@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Initialize from './../components/Initialize';
+import Initialize from './Initialize'
 import { Redirect } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
