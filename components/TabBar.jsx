@@ -1,20 +1,19 @@
-import { View, Text, TouchableOpacity, StyleSheet, LayoutChangeEvent } from 'react-native';
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
+import { View, StyleSheet} from 'react-native';
 import { colors } from '@/constants/colors';
 import TabBarButton from './TabBarButton';
 import { useState } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useContext } from 'react';
-import { ThemeContext } from '../contexts/ThemeContext';
+import { ThemeContext } from '../app/_layout';
 
-export function TabBar({ state, descriptors, navigation } : BottomTabBarProps) {
+export function TabBar({ state, descriptors, navigation }) {
   const {theme} = useContext(ThemeContext);
     let activeColors = colors[theme.mode]
 
     const [dimensions, setDimensions] = useState({height: 20, width:100})
     const buttonWidth = dimensions.width / state.routes.length;
 
-    const onTabberLayout = (e: LayoutChangeEvent) => {
+    const onTabberLayout = (e) => {
         setDimensions({
             height: e.nativeEvent.layout.height,
             width: e.nativeEvent.layout.width,

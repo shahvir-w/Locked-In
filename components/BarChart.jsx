@@ -7,7 +7,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import useOldestDate from '../backend/FindOldestDate';
 import { colors } from '../constants/colors';
 import { useContext } from 'react';
-import { ThemeContext } from '../contexts/ThemeContext';
+import { ThemeContext } from '../app/_layout';
 import { fetchCompletionScores } from '../backend/FirebaseUtils';
 
 export default function CompletionScoreChart( {refresh} ) {

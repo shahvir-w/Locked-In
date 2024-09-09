@@ -1,9 +1,10 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { TransitionPresets } from '@react-navigation/stack';
-import { useEffect, useState } from "react";
-import { ThemeContext } from "../contexts/ThemeContext";
+import { createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+export const ThemeContext = createContext();
 
 export default function RootLayout() {
 
@@ -13,7 +14,7 @@ export default function RootLayout() {
     'Shippori': require('./../assets/fonts/ShipporiAntiqueB1-Regular.ttf'),
     'Slackey': require('./../assets/fonts/Slackey-Regular.ttf'),
   });
-
+  
   const [theme, setTheme] = useState({ mode: "dark" });
 
   useEffect(() => {

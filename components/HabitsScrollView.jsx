@@ -1,4 +1,3 @@
-import React, { useEffect, useRef, useState } from 'react';
 import {
     Animated,
     Dimensions,
@@ -11,13 +10,11 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import Habit from './Habit';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
-import { doc, deleteDoc, getDoc, updateDoc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { db } from '../configs/FirebaseConfig';
 import { colors } from '../constants/colors';
 import { useContext } from 'react';
-import { ThemeContext } from '../contexts/ThemeContext';
-import { deleteHabit, habitDeletion } from '../backend/FirebaseUtils';
+import { ThemeContext } from '../app/_layout';
+import { deleteHabit } from '../backend/FirebaseUtils';
 
 export default function HabitsScrollView({ habits, remainingTasks, date }) {
   const {theme} = useContext(ThemeContext);

@@ -3,10 +3,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Initialize from './Initialize'
 import { Redirect } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ThemeContext } from "../contexts/ThemeContext";
+import { ThemeContext } from "./_layout";
 import { Image, Text } from "react-native";
 import { colors } from "../constants/colors";
-
 
 export default function Index() {
   const [user, setUser] = useState(null);

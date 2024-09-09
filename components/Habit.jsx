@@ -6,7 +6,7 @@ import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../configs/FirebaseConfig';
 import { colors } from '../constants/colors';
 import { useContext } from 'react';
-import { ThemeContext } from '../contexts/ThemeContext';
+import { ThemeContext } from '../app/_layout';
 
 
 const Habit = (props) => {

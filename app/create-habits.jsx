@@ -7,7 +7,7 @@ import { db } from '../configs/FirebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../constants/colors';
 import { useContext } from 'react';
-import { ThemeContext } from '../contexts/ThemeContext';
+import { ThemeContext } from './_layout';
 import { addHabit } from '../backend/FirebaseUtils';
 
 export default function CreateHabit() {

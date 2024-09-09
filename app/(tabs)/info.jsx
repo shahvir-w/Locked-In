@@ -8,7 +8,7 @@ import { useRouter } from 'expo-router';
 import Collapsible from 'react-native-collapsible';
 import { colors } from "../../constants/colors";
 import { useContext } from 'react';
-import { ThemeContext } from '../../contexts/ThemeContext';
+import { ThemeContext } from '../_layout';
 
 // Accordion Component
 const Accordion = ({ title, children, isOpen, onToggle }) => {

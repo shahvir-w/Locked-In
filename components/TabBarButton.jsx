@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native'
+import { StyleSheet, Pressable } from 'react-native'
 import React, { useEffect } from 'react'
 import { TabIcons } from '@/constants/icons'
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import { colors } from '@/constants/colors'
 import { useContext } from 'react';
-import { ThemeContext } from '../contexts/ThemeContext';
+import { ThemeContext } from '../app/_layout';
 
 const TabBarButton = ({
     onPress,

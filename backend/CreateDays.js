@@ -81,6 +81,19 @@ export function getDaysBetweenDates(date1, date2) {
   return dayDifference;
 }
 
+export function calculateDaysToLockedIn(lockedInScore, streak) {
+  let days = 0;
+  var streak = streak <= 0 ? 1 : streak + 1;
+
+  while (lockedInScore < 90) {
+    const dailyIncrease = fibonacci(streak);
+    lockedInScore += dailyIncrease;
+    streak += 1; // Increment streak assuming daily score is 1
+    days += 1;
+  }
+
+  return days;
+}
 
 // Function for duplicating habits
 export const duplicateHabits = async (sourceDate, targetDate) => {
@@ -185,17 +198,3 @@ export const duplicateHabits = async (sourceDate, targetDate) => {
     console.error('Error duplicating habits:', error);
   }
 };
-
-export function calculateDaysToLockedIn(lockedInScore, streak) {
-  let days = 0;
-  var streak = streak <= 0 ? 1 : streak + 1;
-
-  while (lockedInScore < 90) {
-    const dailyIncrease = fibonacci(streak);
-    lockedInScore += dailyIncrease;
-    streak += 1; // Increment streak assuming daily score is 1
-    days += 1;
-  }
-
-  return days;
-}

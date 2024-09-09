@@ -10,7 +10,7 @@ import { initializeFirstDay, duplicateHabits } from '../../backend/CreateDays';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { colors } from "../../constants/colors"
 import { useContext } from 'react';
-import { ThemeContext } from '../../contexts/ThemeContext';
+import { ThemeContext } from '../_layout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 

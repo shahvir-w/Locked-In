@@ -10,7 +10,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useRouter } from 'expo-router';
 import { colors } from '../../constants/colors';
 import { useContext } from 'react';
-import { ThemeContext } from '../../contexts/ThemeContext';
+import { ThemeContext } from '../_layout';
 import { fetchUserName, fetchUserLockedInScore } from '../../backend/FirebaseUtils';
 
 export default function Stats() {
