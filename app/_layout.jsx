@@ -1,8 +1,9 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { TransitionPresets } from '@react-navigation/stack';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RootLayout() {
 
@@ -13,15 +14,29 @@ export default function RootLayout() {
     'Slackey': require('./../assets/fonts/Slackey-Regular.ttf'),
   });
 
-  const [theme, setTheme] = useState({mode: "dark"});
-  const updateTheme = (newTheme) => {
+  const [theme, setTheme] = useState({ mode: "dark" });
+
+  useEffect(() => {
+    const checkTheme = async () => {
+      const storedTheme = await AsyncStorage.getItem('userTheme');
+      if (storedTheme) {
+        setTheme({ mode: storedTheme });
+      }
+    };
+
+    checkTheme();
+    }, []);
+
+  const updateTheme = async (newTheme) => {
     let mode;
     if (!newTheme) {
-      mode = theme.mode === "dark" ? "light" : "dark"
-      newTheme = {mode};
+      mode = theme.mode === "dark" ? "light" : "dark";
+      newTheme = { mode };
     }
-    setTheme(newTheme)
-  }
+    console.log(newTheme);
+    await AsyncStorage.setItem('userTheme', newTheme.mode);
+    setTheme(newTheme);
+  };
 
   return (
     <ThemeContext.Provider value={{theme, updateTheme}}>

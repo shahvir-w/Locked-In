@@ -2,11 +2,8 @@ import { View, Text, StyleSheet, Image, ScrollView, RefreshControl } from 'react
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CircularProgress from 'react-native-circular-progress-indicator';
-import { getDoc, doc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { db } from '../../configs/FirebaseConfig';
 import useMostRecentDate from '../../backend/FindRecentDate';
-import { calculateDaysToLockedIn } from '../../backend/CreateDays';
 import LockedInChart from '../../components/ProgressChart';
 import CompletionScoreChart from '../../components/BarChart';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -14,6 +11,7 @@ import { useRouter } from 'expo-router';
 import { colors } from '../../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from '../../contexts/ThemeContext';
+import { fetchUserName, fetchUserLockedInScore } from '../../backend/FirebaseUtils';
 
 export default function Stats() {
   const {theme} = useContext(ThemeContext);
@@ -29,39 +27,23 @@ export default function Stats() {
   useEffect(() => {
     const fetchUserData = async () => {
       const uid = await AsyncStorage.getItem('userUID');
+      
       if (uid) {
-        // Fetch user's name
-        const userRef = doc(db, 'users', uid);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          const userData = userSnap.data();
-          setName(userData.name.toLowerCase());
-        }
-
-        // Fetch lockedInScore
-        const dateRef = doc(db, 'users', uid, 'days', mostRecentDate);
-        const dateSnap = await getDoc(dateRef);
-        if (dateSnap.exists()) {
-          const dateData = dateSnap.data();
-          lockedInScore = dateData.lockedInScore
-          streak = dateData.streak
-          setCurrentStreak(streak)
-
-          daysTillLockedInCalc = calculateDaysToLockedIn(lockedInScore, streak);
-          setDaysTillLockedIn(daysTillLockedInCalc)
-          setScore(lockedInScore);
-        }
-      }
-    };
+        const name = await fetchUserName(uid);
+        setName(name);
+        const [lockedInScore, streak, daysTillLockedInCalc] = await fetchUserLockedInScore(uid, mostRecentDate);
+        setScore(lockedInScore);
+        setCurrentStreak(streak);
+        setDaysTillLockedIn(daysTillLockedInCalc);
+      };
+    }
 
     fetchUserData();
   }, [mostRecentDate]);
 
   const [refresh, setRefresh] = useState(false);
   const pullMe = () => {
-    setRefresh(true)
-
-    
+    setRefresh(true);
     setTimeout(() => {
       setRefresh(false)
     }, 500)

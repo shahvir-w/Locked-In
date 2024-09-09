@@ -3,13 +3,12 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 import { ruleTypes } from 'gifted-charts-core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getDoc, doc } from 'firebase/firestore';
-import { db } from '../configs/FirebaseConfig';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import useOldestDate from '../backend/FindOldestDate';
 import { colors } from '../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
+import { fetchLockedInScores } from '../backend/FirebaseUtils';
 
 export default function LockedInChart() {
   const {theme} = useContext(ThemeContext);
@@ -43,58 +42,23 @@ export default function LockedInChart() {
     const newDate = new Date(day);
     newDate.setDate(day.getDate() - 7); // Move one week back
     const oldestStartDay = (determineDate(new Date("2024-09-07")));
-    if (newDate > oldestStartDay) setDay(newDate);
+    setDay(newDate);
   };
 
   const handleDateRight = () => {
     const newDate = new Date(day);
     newDate.setDate(day.getDate() + 7); // Move one week forwar
-    if (newDate <= today) setDay(newDate);
+    setDay(newDate);
   };
 
   useEffect(() => {
-    const fetchLockedInScores = async () => {
-      const startOfWeek = determineDate(day);
+    const fetchScores = async () => {
       const uid = await AsyncStorage.getItem('userUID');
-      const updatedLineData = [];
-  
-      // Precompute the dates for the week
-      const datesForWeek = Array.from({ length: 7 }, (_, i) => {
-        const date = new Date(startOfWeek);
-        date.setDate(startOfWeek.getDate() + i);
-        return {
-          formattedDate: date.toLocaleDateString('en-CA'),
-          label: date.toLocaleDateString('en-US', { weekday: 'short' })[0],
-        };
-      });
-  
-      // Fetch all lockedInScores for the week in parallel
-      const fetchPromises = datesForWeek.map(({ formattedDate }) => {
-        const dateRef = doc(db, 'users', uid, 'days', formattedDate);
-        return getDoc(dateRef);
-      });
-  
-      const dateSnaps = await Promise.all(fetchPromises);
-  
-      dateSnaps.forEach((dateSnap, index) => {
-        if (dateSnap.exists()) {
-          const dateData = dateSnap.data();
-          const lockedInScore = dateData.lockedInScore;
-  
-          // Only push data if lockedInScore exists
-          if (lockedInScore !== undefined) {
-            updatedLineData.push({
-              value: lockedInScore,
-              label: datesForWeek[index].label,
-            });
-          }
-        }
-      });
-  
-      setLineData(updatedLineData);
+      const startOfWeek = determineDate(day);
+      await fetchLockedInScores(uid, setLineData, startOfWeek);
     };
-  
-    fetchLockedInScores();
+
+    fetchScores();
   }, [day]);
 
   return (

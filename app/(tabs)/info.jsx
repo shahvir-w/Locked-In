@@ -75,8 +75,6 @@ export default function Info() {
     </View>
   );
 
-  
-
   const appearanceBody = (
     <View style={styles.toggleContainer}>
       <Text style={[styles.toggleText, {color: activeColors.regular}]}>Dark</Text>

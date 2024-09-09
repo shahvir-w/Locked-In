@@ -13,13 +13,6 @@ const TabBarButton = ({
     routeName,
     color,
     label
-}: {
-    onPress:Function,
-    onLongPress:Function,
-    isFocused:boolean,
-    routeName:string,
-    color:string,
-    label:string
 }) => {
     const {theme} = useContext(ThemeContext);
     let activeColors = colors[theme.mode]

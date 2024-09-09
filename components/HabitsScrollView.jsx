@@ -17,6 +17,7 @@ import { db } from '../configs/FirebaseConfig';
 import { colors } from '../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
+import { deleteHabit, habitDeletion } from '../backend/FirebaseUtils';
 
 export default function HabitsScrollView({ habits, remainingTasks, date }) {
   const {theme} = useContext(ThemeContext);
@@ -31,43 +32,12 @@ export default function HabitsScrollView({ habits, remainingTasks, date }) {
   const handleDelete = async (name) => {
     if (deleteInProgress) return;
     deleteInProgress = true;
-
+  
     const user = await AsyncStorage.getItem('userUID');
     const today = new Date().toLocaleDateString('en-CA');
-    const habitRef = doc(db, 'users', user, 'days', today, 'habits', name);
-    
-    try {
-        const habitSnapshot = await getDoc(habitRef);
-        if (habitSnapshot.exists()) {
-            const habitData = habitSnapshot.data();
-            const importance = habitData.importance;
-            const isChecked = habitData.isChecked;
-            
-            // Adjust the availableScore and completionScore
-            const dayRef = doc(db, 'users', user, 'days', today);
-            const daySnapshot = await getDoc(dayRef);
-            if (daySnapshot.exists()) {
-                const dayData = daySnapshot.data();
-                const newAvailableScore = dayData.availableScore - importance;
-                const newCompletionScore = isChecked 
-                    ? dayData.completionScore - importance 
-                    : dayData.completionScore;
-                
-                await updateDoc(dayRef, {
-                    availableScore: newAvailableScore,
-                    completionScore: newCompletionScore,
-                });
-            }
-
-            // Delete the habit
-            await deleteDoc(habitRef);
-        }
-    } catch (error) {
-        console.error("Error removing document: ", error);
-    } finally {
-        deleteInProgress = false; // Reset the flag after the operation is complete
-    }
-};
+    await deleteHabit(user, name, today);
+    deleteInProgress = false;
+  }
 
   const onSwipeValueChange = (swipeData) => {
     if (isPastDate) return;

@@ -54,11 +54,11 @@ export const initializeFirstDay = async (date) => {
 // Helper function to calculate the Fibonacci value based on the streak
 const fibonacci = (n) => {
   if (n === 0) return 0;
-  if (n === 1 || n === -1) return 1;
-  if (n === 2 || n === -2) return 2;
+  if (n === 1 || n === -1) return 2;
+  if (n === 2 || n === -2) return 3;
 
   let absN = Math.abs(n);
-  let fib = [1, 2];
+  let fib = [2, 3];
   for (let i = 2; i < absN; i++) {
     fib[i] = fib[i - 1] + fib[i - 2];
   }
@@ -108,7 +108,7 @@ export const duplicateHabits = async (sourceDate, targetDate) => {
             dailyScore = completionScore / currentAvailableScore;
           }
           
-          if (dailyScore <= 0.1) dailyScore = 0.1;
+          if (dailyScore <= 0.25) dailyScore = 0.25;
 
           const intermediateDate = new Date(sourceDate);
           intermediateDate.setDate(intermediateDate.getDate() + i);
@@ -143,7 +143,7 @@ export const duplicateHabits = async (sourceDate, targetDate) => {
           const intermediateDateRef = doc(db, 'users', uid, 'days', formattedDate);
           await setDoc(intermediateDateRef, {
             completionScore: 0,
-            availableScore: 0,
+            availableScore: currentAvailableScore,
             streak: currentStreak,
             lockedInScore: newLockedInScore,
           });

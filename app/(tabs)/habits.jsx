@@ -3,9 +3,7 @@ import { SafeAreaView, View, Text, StyleSheet, Image, TouchableOpacity } from 'r
 import AntDesign from '@expo/vector-icons/AntDesign';
 import EmptyHabits from '../../components/EmptyHabits';
 import HabitsScrollView from '../../components/HabitsScrollView';
-import { db } from '../../configs/FirebaseConfig';
-import { collection, query, onSnapshot } from 'firebase/firestore';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { loadHabits } from '../../backend/FirebaseUtils';
 import useOldestDate from '../../backend/FindOldestDate';
 import useMostRecentDate from '../../backend/FindRecentDate';
 import { initializeFirstDay, duplicateHabits } from '../../backend/CreateDays';
@@ -13,6 +11,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { colors } from "../../constants/colors"
 import { useContext } from 'react';
 import { ThemeContext } from '../../contexts/ThemeContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Habits() {
@@ -65,25 +64,13 @@ export default function Habits() {
   };
 
   useEffect(() => {
-    const loadHabits = async () => {
+    const fetchHabits = async () => {
       const uid = await AsyncStorage.getItem('userUID');
-      if (uid) {
-        const habitsRef = collection(db, 'users', uid, 'days', date, 'habits');
-        const q = query(habitsRef);
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-          const habits = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setUserHabits(habits);
-          setRemainingTasks(habits.filter(habit => !habit.isChecked).length);
-        });
-
-        return () => unsubscribe();
-      }
+      const unsubscribe = await loadHabits(uid, date, setUserHabits, setRemainingTasks);
+      return unsubscribe;
     };
-
-    loadHabits();
+  
+    fetchHabits();
   }, [date]);
 
   return (

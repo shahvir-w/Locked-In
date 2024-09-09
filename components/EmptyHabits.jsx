@@ -24,7 +24,7 @@ export default function EmptyHabits({ date }) {
       <Text style={[styles.emptyText, {color: activeColors.regular}, isPastDate && styles.viewOnlyText]}>
       {isPastDate 
           ? 'NO DATA...\n ...you forgot to open the app'
-          : "you have no habits, click the plus \nbelow to add some" }
+          : "you have no tasks, click the plus \nbelow to add some" }
       </Text>
 
       {!isPastDate && (

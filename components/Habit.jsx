@@ -16,11 +16,12 @@ const Habit = (props) => {
     const [isChecked, setIsChecked] = useState(props.checked);
     
     const [isLoading, setIsLoading] = useState(false);
+    
     const toggleCheckBox = async () => {
         if (props.isPastDate || isLoading) return;
-
-        setIsLoading(true); // Set loading state to true to disable further interactions
-
+        
+        setIsLoading(true);
+        
         try {
             const newCheckedState = !isChecked;
             setIsChecked(newCheckedState);

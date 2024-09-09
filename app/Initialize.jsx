@@ -67,11 +67,11 @@ const styles = StyleSheet.create({
     height: '120%',
   },
   main: {
-    flex: 1,
+    flex: 0,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    top: -100,
+    marginTop: 190,
   },
   container: {
     flexDirection: 'row',

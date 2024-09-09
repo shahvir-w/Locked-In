@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
+import { addHabit } from '../backend/FirebaseUtils';
 
 export default function CreateHabit() {
   const router = useRouter();
@@ -18,44 +19,17 @@ export default function CreateHabit() {
   let activeColors = colors[theme.mode]
 
   const handleConfirm = async () => {
+    const uid = await AsyncStorage.getItem('userUID');
     if (habit.trim() === '') {
       return;
     }
-    
-    try {
-      const user = await AsyncStorage.getItem('userUID');
-      if (user) {
-        const today = new Date().toLocaleDateString('en-CA');
-        const habitId = Date.now().toString();
-        const habitRef = doc(db, 'users', user, 'days', today, 'habits', habit);
-        await setDoc(habitRef, {
-          id: habitId,
-          name: habit,
-          importance: importance,
-          isChecked: false,
-        });
-
-        
-        const dayRef = doc(db, 'users', user, 'days', today);
-        const daySnapshot = await getDoc(dayRef);
-        if (daySnapshot.exists()) {
-          const currentAvailableScore = daySnapshot.data().availableScore;
-          const newAvailableScore = currentAvailableScore + importance;
-
-          await updateDoc(dayRef, {availableScore: newAvailableScore });
-        }
-        router.back();
-      }
-
-    } catch (error) {
-      console.error('Error adding habit:', error);
-    }
+    await addHabit(uid, habit, importance, router);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={{ fontFamily: 'aldrich', fontSize: 25, color: '#fff' }}>new habit</Text>
+        <Text style={{ fontFamily: 'aldrich', fontSize: 25, color: '#fff' }}>new task</Text>
         <TouchableOpacity onPress={() => router.back()} style={{ top: -2 }}>
           <FontAwesome6 name="xmark" size={30} color="white" />
         </TouchableOpacity>
@@ -64,7 +38,9 @@ export default function CreateHabit() {
         <View>
           <Text style={[styles.label, {color: activeColors.regular}]}>Name</Text>
           <TextInput
-            style={[styles.input, {backgroundColor: activeColors.progressIndicator}]}
+            style={[styles.input, {backgroundColor: activeColors.progressIndicator},
+              {color: activeColors.regular}
+            ]}
             placeholder="Max 23 characters"
             placeholderTextColor= {activeColors.input}
             onChangeText={(text) => setHabit(text)}

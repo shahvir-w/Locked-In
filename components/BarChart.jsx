@@ -3,13 +3,12 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
 import { ruleTypes } from 'gifted-charts-core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getDoc, doc } from 'firebase/firestore';
-import { db } from '../configs/FirebaseConfig';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import useOldestDate from '../backend/FindOldestDate';
 import { colors } from '../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
+import { fetchCompletionScores } from '../backend/FirebaseUtils';
 
 export default function CompletionScoreChart( {refresh} ) {
   const {theme} = useContext(ThemeContext)
@@ -42,59 +41,23 @@ export default function CompletionScoreChart( {refresh} ) {
     const newDate = new Date(day);
     newDate.setDate(day.getDate() - 7); // Move one week back
     const oldestStartDay = (determineDate(new Date("2024-09-07")));
-    if (newDate > oldestStartDay) setDay(newDate);
+    setDay(newDate);
   };
 
   const handleDateRight = () => {
     const newDate = new Date(day);
     newDate.setDate(day.getDate() + 7); // Move one week forward
-    if (newDate <= today) setDate(newDate);
+    setDay(newDate);
   };
 
   useEffect(() => {
-    const fetchCompletionScores = async () => {
-      const startOfWeek = determineDate(day);
+    const fetchScores = async () => {
       const uid = await AsyncStorage.getItem('userUID');
-      const updatedBarData = [];
-      
-      const datesForWeek = Array.from({ length: 7 }, (_, i) => {
-        const date = new Date(startOfWeek);
-        date.setDate(startOfWeek.getDate() + i);
-        return {
-          formattedDate: date.toLocaleDateString('en-CA'),
-          label: date.toLocaleDateString('en-US', { weekday: 'short' })[0],
-        };
-      });
-
-      const fetchPromises = datesForWeek.map(({ formattedDate }) => {
-        const dateRef = doc(db, 'users', uid, 'days', formattedDate);
-        return getDoc(dateRef);
-      });
-
-      const dateSnaps = await Promise.all(fetchPromises);
-
-      dateSnaps.forEach((dateSnap, index) => {
-        if (dateSnap.exists()) {
-          const dateData = dateSnap.data();
-          const availableScore = dateData.availableScore;
-          const completionScore = dateData.completionScore;
-          let dayScore; 
-          availableScore == 0 ? dayScore = 1 : completionScore == 0 ? dayScore = 1 : dayScore = (completionScore / availableScore) * 100
-
-          // Only push data if lockedInScore exists
-          if (dayScore !== undefined) {
-            updatedBarData.push({
-              value: dayScore,
-              label: datesForWeek[index].label,
-            });
-          }
-        }
-      });
-      
-      setBarData(updatedBarData);
+      const startOfWeek = determineDate(day);
+      await fetchCompletionScores(uid, setBarData, startOfWeek);
     };
-
-    fetchCompletionScores();
+  
+    fetchScores();
   }, [day, refresh]);
 
   return (
