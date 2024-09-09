@@ -9,7 +9,9 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../../configs/FirebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
-import { doc, setDoc, Timestamp } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
+import { initializeFirstDay } from '../../../backend/CreateDays';
+
 
 export default function SignIn() {
     const router = useRouter();
@@ -18,6 +20,7 @@ export default function SignIn() {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [isvalid, setIsValid] = useState(true);
+    const today = new Date().toLocaleDateString();
 
     const OnCreateAccount= async () => {
         if (!name || !email || !password) { 
@@ -29,16 +32,15 @@ export default function SignIn() {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // Store user data in Firestore
             await setDoc(doc(db, 'users', user.uid), {
                 name: name,
                 email: email,
                 uid: user.uid,
-                createdAt: Timestamp.now(),
+                createdAt: today
             });
-
-            // Store the user ID in AsyncStorage for persistence
+            
             await AsyncStorage.setItem('userUID', user.uid);
+            initializeFirstDay(today);
 
             if (user) router.replace('/habits');
 

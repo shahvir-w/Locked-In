@@ -22,7 +22,7 @@ export default function HabitsScrollView({ habits, remainingTasks, date }) {
   
   const router = useRouter();
 
-  const today = new Date().toLocaleDateString('en-CA');
+  const today = new Date().toLocaleDateString();
   const isPastDate = date < today;
   let deleteInProgress = false;
 
@@ -31,7 +31,6 @@ export default function HabitsScrollView({ habits, remainingTasks, date }) {
     deleteInProgress = true;
   
     const user = await AsyncStorage.getItem('userUID');
-    const today = new Date().toLocaleDateString('en-CA');
     await deleteHabit(user, name, today);
     deleteInProgress = false;
   }

@@ -7,7 +7,6 @@ import useMostRecentDate from '../../backend/FindRecentDate';
 import LockedInChart from '../../components/ProgressChart';
 import CompletionScoreChart from '../../components/BarChart';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { useRouter } from 'expo-router';
 import { colors } from '../../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from '../_layout';
@@ -17,7 +16,6 @@ export default function Stats() {
   const {theme} = useContext(ThemeContext);
   let activeColors = colors[theme.mode];
   
-  const router = useRouter();
   const mostRecentDate = useMostRecentDate();
   const [score, setScore] = useState(0);
   const [name, setName] = useState('');

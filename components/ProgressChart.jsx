@@ -31,8 +31,8 @@ export default function LockedInChart() {
     endOfWeek.setDate(startOfWeek.getDate() + 6);
 
     const options = { month: 'long', day: 'numeric' };
-    setStartDay(startOfWeek.toLocaleDateString('en-US', options));
-    setEndDay(endOfWeek.toLocaleDateString('en-US', options));
+    setStartDay(startOfWeek.toLocaleDateString(undefined, options));
+    setEndDay(endOfWeek.toLocaleDateString(undefined, options));
 
     return startOfWeek;
   }

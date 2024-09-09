@@ -1,10 +1,44 @@
-import { collection, deleteDoc, doc, getDoc, onSnapshot, query, setDoc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../configs/FirebaseConfig";
 import { calculateDaysToLockedIn } from "./CreateDays";
+import { getAuth, deleteUser } from "firebase/auth";
+
+export const deleteAccountAndData = async (uid) => {
+  const userDocRef = doc(db, 'users', uid);
+  const daysCollectionRef = collection(db, 'users', uid, 'days');
+  const habitsCollectionRef = collection(db, 'users', uid, 'habits');
+
+  // Fetch all habits in the collection
+  const daysSnapshot = await getDocs(daysCollectionRef);
+  const habitsSnapShot = await getDocs(habitsCollectionRef);
+
+  // Delete each habit document
+  for (const dayDoc of daysSnapshot.docs) {
+    await deleteDoc(dayDoc.ref);
+  }
+  for (const habitDoc of habitsSnapShot.docs) {
+    await deleteDoc(habitDoc.ref);
+  }
+
+  // Delete user document
+  await deleteDoc(userDocRef);
+  console.log("deleted everyhting")
+
+
+  const auth = getAuth();
+    const user = auth.currentUser;
+
+    deleteUser(user).then(() => {
+    console.log("deleted user")
+    }).catch((error) => {
+    // An error ocurred
+    // ...
+    });
+};
 
 export const addHabit = async (uid, habit, importance, router) => {
     try {
-      const today = new Date().toLocaleDateString('en-CA');
+      const today = new Date().toLocaleDateString();
       const habitId = Date.now().toString();
       const habitRef = doc(db, 'users', uid, 'days', today, 'habits', habit);
       await setDoc(habitRef, {
@@ -108,8 +142,8 @@ export const fetchCompletionScores = async (uid, setBarData, startOfWeek) => {
     const date = new Date(startOfWeek);
     date.setDate(startOfWeek.getDate() + i);
     return {
-      formattedDate: date.toLocaleDateString('en-CA'),
-      label: date.toLocaleDateString('en-US', { weekday: 'short' })[0],
+      formattedDate: date.toLocaleDateString(),
+      label: date.toLocaleDateString(undefined, { weekday: 'short' })[0],
     };
   });
 
@@ -148,8 +182,8 @@ export const fetchLockedInScores = async (uid, setLineData, startOfWeek) => {
       const date = new Date(startOfWeek);
       date.setDate(startOfWeek.getDate() + i);
       return {
-        formattedDate: date.toLocaleDateString('en-CA'),
-        label: date.toLocaleDateString('en-US', { weekday: 'short' })[0],
+        formattedDate: date.toLocaleDateString(),
+        label: date.toLocaleDateString(undefined, { weekday: 'short' })[0],
       };
     });
   

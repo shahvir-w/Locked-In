@@ -6,35 +6,23 @@ import HabitsScrollView from '../../components/HabitsScrollView';
 import { loadHabits } from '../../backend/FirebaseUtils';
 import useOldestDate from '../../backend/FindOldestDate';
 import useMostRecentDate from '../../backend/FindRecentDate';
-import { initializeFirstDay, duplicateHabits } from '../../backend/CreateDays';
+import { duplicateHabits } from '../../backend/CreateDays';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { colors } from "../../constants/colors"
 import { useContext } from 'react';
 import { ThemeContext } from '../_layout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 export default function Habits() {
   const [userHabits, setUserHabits] = useState([]);
   const [remainingTasks, setRemainingTasks] = useState(0);
-  const today = new Date().toLocaleDateString('en-CA');
+  const today = new Date().toLocaleDateString();
   const [date, setDate] = useState(today);
   const oldestDate = useOldestDate();
   const mostRecentDate = useMostRecentDate();
 
   const {theme} = useContext(ThemeContext)
   let activeColors = colors[theme.mode]
-
-  useEffect(() => {
-    const checkFirstDay = async () => {
-      if (mostRecentDate == "no data") {
-        await initializeFirstDay(today);
-      }
-    };
-
-    checkFirstDay();
-  }, [mostRecentDate]);
-
 
   useEffect(() => {
     const duplicate = async () => {

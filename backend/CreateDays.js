@@ -5,30 +5,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const initializeFirstDay = async (date) => {
   const uid = await AsyncStorage.getItem('userUID');
   
-  if (!uid) {
-    console.error('User UID is not found.');
-    return;
-  }
-
-  // Convert string date (if necessary) to a Date object
-  const targetDate = typeof date === 'string' ? new Date(date) : date;
-
-  const formattedTargetDate = targetDate.toISOString().split('T')[0]; // Format as "YYYY-MM-DD"
+  const targetDate = new Date(date);
+  const formattedTargetDate = targetDate.toLocaleDateString(); // Format as "YYYY-MM-DD"
   const targetDateRef = doc(db, 'users', uid, 'days', formattedTargetDate);
-
-  // Initialize the target date document with the required fields
   await setDoc(targetDateRef, {
     completionScore: 0,
     availableScore: 0,
     streak: 0,
     lockedInScore: 0,
   });
+  
 
-  // Determine the start of the week (1 day in the past)
-  const dayOfWeek = targetDate.getDay();
-  const startOfWeek = new Date(targetDate);
-  startOfWeek.setDate(targetDate.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1) - 1); // Move back by 1 extra day
+  /*
+  console.log("Current Date and Time:", targetDate.toString());
+  console.log("Day of the Week (0 = Sunday, 1 = Monday, ...):", targetDate.getDay());
 
+  // Initialize the target date document with the required fields
+  
+
+  // Determine the start of the week
+
+  
   // Get days between start of the week and target date
   const daysInBetween = getDaysBetweenDates(startOfWeek, targetDate);
 
@@ -48,10 +45,11 @@ export const initializeFirstDay = async (date) => {
       lockedInScore: 0,
     });
   }
+    */
 };
 
 
-// Helper function to calculate the Fibonacci value based on the streak
+// Helper function to calculate the fibonacci value based on the streak
 const fibonacci = (n) => {
   if (n === 0) return 0;
   if (n === 1 || n === -1) return 2;
@@ -88,7 +86,7 @@ export function calculateDaysToLockedIn(lockedInScore, streak) {
   while (lockedInScore < 90) {
     const dailyIncrease = fibonacci(streak);
     lockedInScore += dailyIncrease;
-    streak += 1; // Increment streak assuming daily score is 1
+    streak += 1;
     days += 1;
   }
 
@@ -125,7 +123,7 @@ export const duplicateHabits = async (sourceDate, targetDate) => {
 
           const intermediateDate = new Date(sourceDate);
           intermediateDate.setDate(intermediateDate.getDate() + i);
-          const formattedDate = intermediateDate.toISOString().split('T')[0]; // Format as "YYYY-MM-DD"
+          const formattedDate = intermediateDate.toLocaleDateString(); // Format as "YYYY-MM-DD"
 
           // Adjust streak based on daily score
           if (currentStreak >= 0 && dailyScore > 0.9) {

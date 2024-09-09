@@ -27,7 +27,7 @@ const Habit = (props) => {
             setIsChecked(newCheckedState);
 
             const uid = await AsyncStorage.getItem('userUID');
-            const today = new Date().toLocaleDateString('en-CA');
+            const today = new Date().toLocaleDateString();
             const habitRef = doc(db, 'users', uid, 'days', today, 'habits', props.text);
             await setDoc(habitRef, { isChecked: newCheckedState }, { merge: true });
 

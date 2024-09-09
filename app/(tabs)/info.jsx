@@ -9,6 +9,7 @@ import Collapsible from 'react-native-collapsible';
 import { colors } from "../../constants/colors";
 import { useContext } from 'react';
 import { ThemeContext } from '../_layout';
+import { deleteAccountAndData } from '../../backend/FirebaseUtils';
 
 // Accordion Component
 const Accordion = ({ title, children, isOpen, onToggle }) => {
@@ -34,11 +35,21 @@ const Accordion = ({ title, children, isOpen, onToggle }) => {
 export default function Info() {
   const [activeAccordion, setActiveAccordion] = useState(null);
   const router = useRouter();
-  // Clear AsyncStorage and Navigate
+
   const clearAsyncStorage = async () => {
-    await AsyncStorage.clear(); // Clear storage first
-    router.replace('../Initialize'); // Then navigate
+    await AsyncStorage.clear();
+    router.replace('../Initialize'); 
   };
+
+  const deleteAccount = async () => {
+    const uid = await AsyncStorage.getItem('userUID');
+    await deleteAccountAndData(uid);
+
+    await AsyncStorage.clear();
+    router.replace('../Initialize');
+
+  }
+  
 
   // Toggles the accordion, ensuring only one can be open at a time
   const toggleAccordion = (index) => {
@@ -69,7 +80,7 @@ export default function Info() {
     <View>
       <Text style={[styles.accountText, {color: activeColors.regular}]}>Name: </Text>
       <Text style={[styles.accountText, {color: activeColors.regular}]}>Email: </Text>
-      <TouchableOpacity style={styles.deleteButton} onPress={clearAsyncStorage}>
+      <TouchableOpacity style={styles.deleteButton} onPress={deleteAccount}>
         <Text style={styles.deleteButtonText}>delete account</Text>
       </TouchableOpacity>
     </View>
