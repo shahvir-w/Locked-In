@@ -22,7 +22,7 @@ export default function RootLayout() {
       <Stack.Screen 
         name="create-habits" 
         options={{
-          ...TransitionPresets.ModalSlideFromBottomIOS, // Custom transition for this screen
+          ...TransitionPresets.ModalSlideFromBottomIOS,
           gestureEnabled: true 
         }}
         

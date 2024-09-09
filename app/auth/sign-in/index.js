@@ -1,6 +1,6 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Colors } from '@/constants/Colors'
+import { colors } from '@/constants/colors'
 import { useRouter } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -57,7 +57,7 @@ export default function SignIn() {
             <Text style={{
                 fontFamily: 'JockeyOne',
                 fontSize: 41,
-                color: Colors.PURPLE,
+                color: colors.PURPLE,
                 top: 18,
                 left: -12,
             }}>locked in</Text>
@@ -68,14 +68,14 @@ export default function SignIn() {
         <Text style={{
             fontFamily: 'Aldrich',
             fontSize: 32,
-            color: Colors.PURPLE,
+            color: colors.PURPLE,
             textAlign: 'center',
             top: -60,
         }}>welcome back!</Text>
           <Text style={{
               fontFamily: 'Shippori',
               fontSize: 17,
-              color: Colors.PURPLE,
+              color: colors.PURPLE,
               left: 10,
               textAlign: 'left',
               top: -25,
@@ -91,7 +91,7 @@ export default function SignIn() {
           <Text style={{
               fontFamily: 'Shippori',
               fontSize: 17,
-              color: Colors.PURPLE,
+              color: colors.PURPLE,
               left: 10,
               textAlign: 'left',
               top: -10,
@@ -111,7 +111,7 @@ export default function SignIn() {
             fontFamily: 'Shippori',
             fontSize: 14,
             textAlign: 'center',
-            color: Colors.WHITE,
+            color: colors.WHITE,
           }}>{isvalid ? "sign in" : "invalid, try again"}</Text>
         </TouchableOpacity>
 
@@ -125,7 +125,7 @@ export default function SignIn() {
             fontFamily: 'Shippori',
             fontSize: 14,
             textAlign: 'center',
-            color: Colors.WHITE,
+            color: colors.WHITE,
           }}>create account</Text>
         </TouchableOpacity>
 
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     color: "#949494",
     padding: 10,
     borderWidth: 1,
-    borderColor: Colors.PURPLE,
+    borderColor: colors.PURPLE,
     height: 40,
     width: 320,
     alignSelf: 'center',
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     top: -25,
   },
   button: {
-    backgroundColor: Colors.PURPLE,
+    backgroundColor: colors.PURPLE,
     height: 54,
     width: 320,
     alignSelf: 'center',
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     top: -10,
   },
   button2: {
-    borderColor: Colors.PURPLE,
+    borderColor: colors.PURPLE,
     borderWidth: 2,
     height: 54,
     width: 320,

@@ -7,8 +7,14 @@ import { getDoc, doc } from 'firebase/firestore';
 import { db } from '../configs/FirebaseConfig';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import useOldestDate from '../backend/FindOldestDate';
+import { colors } from '../constants/colors';
+import { useContext } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 export default function CompletionScoreChart( {refresh} ) {
+  const {theme} = useContext(ThemeContext)
+  let activeColors = colors[theme.mode]
+  
   const [barData, setBarData] = useState([]);
 
   const today = new Date();
@@ -92,22 +98,22 @@ export default function CompletionScoreChart( {refresh} ) {
   }, [day, refresh]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>task completion</Text>
+    <View style={[styles.container, {backgroundColor: activeColors.backgroundSecondary}]}>
+      <Text style={[styles.title, {color: activeColors.regular}]}>task completion</Text>
 
       <View style={styles.dateScroll}>
         <TouchableOpacity onPress={handleDateLeft}
         hitSlop={{ top: 50, bottom: 50, left: 50, right: 50 }}
         >
-          <AntDesign name="left" size={20} color="white" style={{top: -6}}/>
+          <AntDesign name="left" size={20} color={activeColors.regular} style={{top: -6}}/>
         </TouchableOpacity>
         
-        <Text style={styles.dateText}>{startDay} - {endDay}</Text>
+        <Text style={[styles.dateText, {color: activeColors.chartGray}]}>{startDay} - {endDay}</Text>
 
         <TouchableOpacity onPress={handleDateRight}
         hitSlop={{ top: 50, bottom: 50, left: 50, right: 50 }}
         >
-          <AntDesign name="right" size={20} color="white" style={{top: -6}}/>
+          <AntDesign name="right" size={20} color={activeColors.regular} style={{top: -6}}/>
         </TouchableOpacity>
       </View>
       
@@ -126,15 +132,15 @@ export default function CompletionScoreChart( {refresh} ) {
             initialSpacing={5}  // Added initial space between the line and the x-axis
             noOfSections={4}
             rulesType={ruleTypes.DASHED}
-            rulesColor="lightgray"
+            rulesColor={activeColors.chartGray}
             rulesLength={225} 
             rulesThickness={1}
             dashWidth={2}
             yAxisThickness={0}
-            yAxisTextStyle={{ color: '#B6B6B6' , fontSize: 13}}
+            yAxisTextStyle={{ color: activeColors.chartGray , fontSize: 13}}
             yAxisLabelSuffix="%"
             xAxisThickness={0}
-            xAxisLabelTextStyle={{ color: '#B6B6B6' , fontSize: 12}}
+            xAxisLabelTextStyle={{ color: activeColors.chartGray , fontSize: 12}}
             xAxisLabelsVerticalShift={5}
         />
         </View>

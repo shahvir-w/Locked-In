@@ -4,10 +4,15 @@ import { HabitIcons } from '@/constants/icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../configs/FirebaseConfig';
-
+import { colors } from '../constants/colors';
+import { useContext } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 
 const Habit = (props) => {
+    const {theme} = useContext(ThemeContext)
+    let activeColors = colors[theme.mode]
+
     const [isChecked, setIsChecked] = useState(props.checked);
     
     const [isLoading, setIsLoading] = useState(false);
@@ -42,16 +47,16 @@ const Habit = (props) => {
     };
     
     return (
-        <View style={[styles.item, isChecked && styles.checkedItem]}>
+        <View style={[styles.item, {backgroundColor: activeColors.backgroundSecondary}, isChecked && styles.checkedItem]}>
             <View style={styles.itemBox}>
-                <Text style={styles.itemNumber}>{props.number}</Text>
-                <Text style={styles.itemText}>{props.text}</Text>
+                <Text style={[styles.itemNumber, !isChecked && {color: activeColors.regular}]}>{props.number}</Text>
+                <Text style={[styles.itemText, !isChecked && {color: activeColors.regular}]}>{props.text}</Text>
             </View>
             <TouchableOpacity 
                 onPress={toggleCheckBox}
                 hitSlop={{ top: 40, bottom: 40, left: 40, right: 40 }}
             >
-                {HabitIcons[isChecked.toString()]()}
+                {HabitIcons[isChecked.toString()]({ color: isChecked ? 'white' : activeColors.regular })}
             </TouchableOpacity>
         </View>
     );

@@ -10,6 +10,10 @@ import useOldestDate from '../../backend/FindOldestDate';
 import useMostRecentDate from '../../backend/FindRecentDate';
 import { initializeFirstDay, duplicateHabits } from '../../backend/CreateDays';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { colors } from "../../constants/colors"
+import { useContext } from 'react';
+import { ThemeContext } from '../../contexts/ThemeContext';
+
 
 export default function Habits() {
   const [userHabits, setUserHabits] = useState([]);
@@ -18,6 +22,9 @@ export default function Habits() {
   const [date, setDate] = useState(today);
   const oldestDate = useOldestDate();
   const mostRecentDate = useMostRecentDate();
+
+  const {theme} = useContext(ThemeContext)
+  let activeColors = colors[theme.mode]
 
   useEffect(() => {
     const checkFirstDay = async () => {
@@ -81,7 +88,7 @@ export default function Habits() {
 
   return (
     <GestureHandlerRootView>
-      <SafeAreaView style={styles.main}>
+      <SafeAreaView style={[styles.main, { backgroundColor: activeColors.backgroundMain }]}>
         <View style={styles.header}>
           <View style={styles.logoContainer}>
             <Image
@@ -95,15 +102,15 @@ export default function Habits() {
             <TouchableOpacity onPress={handleDateLeft}
             hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
             >
-              <AntDesign name="left" size={20} color="white" />
+              <AntDesign name="left" size={20} color= {activeColors.regular} />
             </TouchableOpacity>
             
-            <Text style={styles.dateText}>{date === today ? 'TODAY' : date}</Text>
+            <Text style={[styles.dateText, { color: activeColors.regular}]}>{date === today ? 'TODAY' : date}</Text>
 
             <TouchableOpacity onPress={handleDateRight}
             hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
             >
-              <AntDesign name="right" size={20} color="white" />
+              <AntDesign name="right" size={20} color= {activeColors.regular} />
             </TouchableOpacity>
           </View>
         </View>
@@ -120,8 +127,7 @@ export default function Habits() {
 
 const styles = StyleSheet.create({
   main: {
-    flex: 1,
-    backgroundColor: "#000",
+    flex: 1
   },
   header: {
     flexDirection: 'row',

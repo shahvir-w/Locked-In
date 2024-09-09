@@ -7,9 +7,14 @@ import { getDoc, doc } from 'firebase/firestore';
 import { db } from '../configs/FirebaseConfig';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import useOldestDate from '../backend/FindOldestDate';
+import { colors } from '../constants/colors';
+import { useContext } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 export default function LockedInChart() {
-  
+  const {theme} = useContext(ThemeContext);
+  let activeColors = colors[theme.mode];
+
   const [lineData, setLineData] = useState([]);
 
   const today = new Date();
@@ -93,22 +98,22 @@ export default function LockedInChart() {
   }, [day]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>locked in Score</Text>
+    <View style={[styles.container, {backgroundColor: activeColors.backgroundSecondary}]}>
+      <Text style={[styles.title, {color: activeColors.regular}]}>locked in Score</Text>
       
       <View style={styles.dateScroll}>
         <TouchableOpacity onPress={handleDateLeft}
         hitSlop={{ top: 50, bottom: 50, left: 50, right: 50 }}
         >
-          <AntDesign name="left" size={20} color="white" style={{top: -6}}/>
+          <AntDesign name="left" size={20} color={activeColors.regular} style={{top: -6}}/>
         </TouchableOpacity>
         
-        <Text style={styles.dateText}>{startDay} - {endDay}</Text>
+        <Text style={[styles.dateText, {color: activeColors.chartGray}]}>{startDay} - {endDay}</Text>
 
         <TouchableOpacity onPress={handleDateRight}
         hitSlop={{ top: 50, bottom: 50, left: 50, right: 50 }}
         >
-          <AntDesign name="right" size={20} color="white" style={{top: -6}}/>
+          <AntDesign name="right" size={20} color={activeColors.regular} style={{top: -6}}/>
         </TouchableOpacity>
       </View>
 
@@ -137,14 +142,14 @@ export default function LockedInChart() {
           noOfSections={4}
           yAxisThickness={0} // Hides the y-axis line
           rulesType={ruleTypes.DASHED}
-          rulesColor="lightgray"
+          rulesColor={activeColors.chartGray}
           rulesLength={225} // Ensure rules cover the entire width of the chart
           rulesThickness={1}
           dashWidth={2}
-          yAxisTextStyle={{ color: '#B6B6B6' , fontSize: 13}}
+          yAxisTextStyle={{ color: activeColors.chartGray , fontSize: 13}}
           yAxisLabelSuffix="%"
           xAxisThickness={0} // Hides the x-axis line
-          xAxisLabelTextStyle={{ color: '#B6B6B6' , fontSize: 12}}
+          xAxisLabelTextStyle={{ color: activeColors.chartGray , fontSize: 12}}
           xAxisLabelsVerticalShift={5} // Adjust vertical shift for labels
         />
       </View>
@@ -156,7 +161,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 0,
     alignItems: 'center',
-    backgroundColor: "#161414",
     padding: 20,
     paddingLeft: 22,
     borderRadius: 10,
@@ -164,7 +168,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontFamily: 'Shippori',
-    color: '#FFFFFF',
     textAlign: 'center',
     marginBottom: 10,
     marginTop: -6,
@@ -172,7 +175,6 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 14,
     fontFamily: 'Shippori',
-    color: 'lightgray',
     textAlign: 'center',
     marginBottom: 14,
   },

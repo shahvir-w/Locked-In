@@ -5,11 +5,17 @@ import { useRouter } from 'expo-router';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../configs/FirebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { colors } from '../constants/colors';
+import { useContext } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 export default function CreateHabit() {
   const router = useRouter();
   const [habit, setHabit] = useState('');
   const [importance, setImportance] = useState(1);
+
+  const {theme} = useContext(ThemeContext)
+  let activeColors = colors[theme.mode]
 
   const handleConfirm = async () => {
     if (habit.trim() === '') {
@@ -19,7 +25,7 @@ export default function CreateHabit() {
     try {
       const user = await AsyncStorage.getItem('userUID');
       if (user) {
-        const today = new Date().toLocaleDateString('en-CA'); // Ensure local date format for consistency
+        const today = new Date().toLocaleDateString('en-CA');
         const habitId = Date.now().toString();
         const habitRef = doc(db, 'users', user, 'days', today, 'habits', habit);
         await setDoc(habitRef, {
@@ -54,26 +60,27 @@ export default function CreateHabit() {
           <FontAwesome6 name="xmark" size={30} color="white" />
         </TouchableOpacity>
       </View>
-      <ScrollView style={styles.content}>
+      <ScrollView style={[styles.content, {backgroundColor: activeColors.backgroundMain}]}>
         <View>
-          <Text style={styles.label}>Name</Text>
+          <Text style={[styles.label, {color: activeColors.regular}]}>Name</Text>
           <TextInput
-            style={styles.input}
-            placeholder="Max 20 characters"
+            style={[styles.input, {backgroundColor: activeColors.progressIndicator}]}
+            placeholder="Max 23 characters"
+            placeholderTextColor= {activeColors.input}
             onChangeText={(text) => setHabit(text)}
-            maxLength={20}
+            maxLength={23}
           />
         </View>
         <View>
-          <Text style={[styles.label, { marginTop: 30 }]}>Importance</Text>
+          <Text style={[styles.label, {color: activeColors.regular}, { marginTop: 30 }]}>Importance</Text>
           <View style={styles.importanceContainer}>
             {[1, 2, 3, 4, 5].map((num) => (
               <TouchableOpacity
                 key={num}
-                style={[styles.importanceButton, importance === num && styles.selectedImportance]}
+                style={[styles.importanceButton, {backgroundColor: activeColors.progressIndicator}, importance === num && styles.selectedImportance]}
                 onPress={() => setImportance(num)}
               >
-                <Text style={styles.importanceText}>{num}</Text>
+                <Text style={[styles.importanceText, {color: activeColors.regular}, importance === num && {color: "#fff"}]}>{num}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -103,7 +110,6 @@ const styles = StyleSheet.create({
     height: 120,
   },
   content: {
-    backgroundColor: "#000",
     height: 400,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
@@ -111,20 +117,15 @@ const styles = StyleSheet.create({
   label: {
     fontFamily: 'Shippori',
     fontSize: 18,
-    color: "#fff",
     left: 30,
     textAlign: 'left',
     marginTop: 60,
     marginLeft: 10,
   },
   input: {
-    placeholderTextColor:"#D3D3D3",
-    selectionColor:"#D3D3D3",
     fontFamily: 'Shippori',
     fontSize: 15,
-    color: "#D3D3D3",
     padding: 15,
-    backgroundColor: "#272424",
     height: 50,
     width: 320,
     alignSelf: 'center',
@@ -144,13 +145,11 @@ const styles = StyleSheet.create({
       borderRadius: 10,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: "#272424",
     },
     selectedImportance: {
       backgroundColor: '#7C81FC',
     },
     importanceText: {
-      color: '#fff',
       fontFamily: 'Slackey',
       fontSize: 16,
     },

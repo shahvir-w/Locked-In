@@ -2,6 +2,9 @@ import { View, Text, StyleSheet, Pressable } from 'react-native'
 import React, { useEffect } from 'react'
 import { TabIcons } from '@/constants/icons'
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
+import { colors } from '@/constants/colors'
+import { useContext } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 const TabBarButton = ({
     onPress,
@@ -18,6 +21,9 @@ const TabBarButton = ({
     color:string,
     label:string
 }) => {
+    const {theme} = useContext(ThemeContext);
+    let activeColors = colors[theme.mode]
+
     const scale = useSharedValue(0);
 
     useEffect(() => {
@@ -53,11 +59,11 @@ const TabBarButton = ({
     >
         <Animated.View style={animatedIconStyle}>
             {TabIcons[routeName]({
-                color: isFocused ? "#fff" : "#fff"
+                color: isFocused ? activeColors.regular : activeColors.regular
             })}
         </Animated.View>
         
-        <Animated.Text style={[{ color: "#fff", fontSize: 12 }, animatedTextStyle]}>{label}</Animated.Text>
+        <Animated.Text style={[{ color: activeColors.regular, fontSize: 12 }, animatedTextStyle]}>{label}</Animated.Text>
   </Pressable>
   )
 }

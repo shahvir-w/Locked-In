@@ -6,14 +6,19 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import Collapsible from 'react-native-collapsible';
+import { colors } from "../../constants/colors";
+import { useContext } from 'react';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 // Accordion Component
 const Accordion = ({ title, children, isOpen, onToggle }) => {
+  const {theme} = useContext(ThemeContext);
+  let activeColors = colors[theme.mode]
   return (
     <>
       <TouchableOpacity onPress={onToggle} style={styles.heading} activeOpacity={0.6}>
         {title}
-        <Icon name={isOpen ? "chevron-up-outline" : "chevron-down-outline"} size={18} color="white" />
+        <Icon name={isOpen ? "chevron-up-outline" : "chevron-down-outline"} size={18} color={activeColors.regular} />
       </TouchableOpacity>
 
       <Collapsible collapsed={!isOpen} align="center">
@@ -27,10 +32,8 @@ const Accordion = ({ title, children, isOpen, onToggle }) => {
 
 // Main Info Component
 export default function Info() {
-  const [activeAccordion, setActiveAccordion] = useState(null); // Track the active accordion
-  const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(false);
+  const [activeAccordion, setActiveAccordion] = useState(null);
   const router = useRouter();
-
   // Clear AsyncStorage and Navigate
   const clearAsyncStorage = async () => {
     await AsyncStorage.clear(); // Clear storage first
@@ -52,96 +55,106 @@ export default function Info() {
     router.push('/TermsAndConditions'); // Adjust path as needed
   };
 
+  const { theme, updateTheme } = useContext(ThemeContext);
+  let activeColors = colors[theme.mode]
+  const [isLightModeEnabled, setIsLightModeEnabled] = useState(theme.mode === "light");
+  
+  const toggleSwitch = () => {
+    updateTheme();
+    setIsLightModeEnabled((previousState) => !previousState);
+  }
+
   // Account Section Content
   const accountBody = (
     <View>
-      <Text style={styles.accountText}>Name: </Text>
-      <Text style={styles.accountText}>Email: </Text>
+      <Text style={[styles.accountText, {color: activeColors.regular}]}>Name: </Text>
+      <Text style={[styles.accountText, {color: activeColors.regular}]}>Email: </Text>
       <TouchableOpacity style={styles.deleteButton} onPress={clearAsyncStorage}>
         <Text style={styles.deleteButtonText}>delete account</Text>
       </TouchableOpacity>
     </View>
   );
 
-  const toggleSwitch = () => setIsDarkModeEnabled((previousState) => !previousState);
+  
 
   const appearanceBody = (
     <View style={styles.toggleContainer}>
-      <Text style={styles.toggleText}>Dark</Text>
+      <Text style={[styles.toggleText, {color: activeColors.regular}]}>Dark</Text>
       <Switch
         style={styles.switch}
-        trackColor={{ false: "#767577", true: "#81b0ff" }}
-        thumbColor={isDarkModeEnabled ? "#f5dd4b" : "#f4f3f4"}
+        trackColor={{false: '#fff', true: '#81b0ff'}}
+        thumbColor={isLightModeEnabled ? "#f5dd4b" : "#f4f3f4"}
         onValueChange={toggleSwitch}
-        value={isDarkModeEnabled}
+        value={isLightModeEnabled}
       />
-      <Text style={styles.toggleText}>Light</Text>
+      <Text style={[styles.toggleText, {color: activeColors.regular}]}>Light</Text>
     </View>
   );
 
   return (
-    <SafeAreaView style={styles.main}>
+    <SafeAreaView style={[styles.main, {backgroundColor: activeColors.backgroundMain}]}>
       <View style={styles.header}>
         <View style={styles.logoContainer}>
           <Image source={require('../../assets/images/Locked-In-Logo.png')} style={styles.logoImage} />
           <Text style={styles.logoText}>locked in</Text>
         </View>
-        <Text style={styles.labelText}>OTHER</Text>
+        <Text style={[styles.labelText, {color: activeColors.regular}]}>OTHER</Text>
       </View>
 
       <View style={styles.listContainer}>
         <Accordion
-          title={<Text style={styles.sectionTitle}>Account</Text>}
+          title={<Text style={[styles.sectionTitle, {color: activeColors.regular}]}>Account</Text>}
           isOpen={activeAccordion === 0}
           onToggle={() => toggleAccordion(0)}
         >
           {accountBody}
         </Accordion>
-        <View style={styles.divider} />
+        <View style={[styles.divider, {borderBottomColor: activeColors.regular}]} />
 
         <Accordion
-          title={<Text style={styles.sectionTitle}>Appearance</Text>}
+          title={<Text style={[styles.sectionTitle, {color: activeColors.regular}]}>Appearance</Text>}
           isOpen={activeAccordion === 1}
           onToggle={() => toggleAccordion(1)}
         >
           {appearanceBody}
         </Accordion>
-        <View style={styles.divider} />
+        <View style={[styles.divider, {borderBottomColor: activeColors.regular}]} />
 
         <TouchableOpacity
           style={styles.heading}
           onPress={navigateToLockedInScore}
         >
-          <Text style={styles.sectionTitle}>Locked In Score Calculation</Text>
-          <Ionicons name="chevron-forward-outline" size={18} color="white" />
+          <Text style={[styles.sectionTitle, {color: activeColors.regular}]}>Locked In Score Calculation</Text>
+          <Ionicons name="chevron-forward-outline" size={18} color={activeColors.regular} />
         </TouchableOpacity>
-        <View style={styles.divider} />
+        <View style={[styles.divider, {borderBottomColor: activeColors.regular}]} />
 
         <Accordion
-          title={<Text style={styles.sectionTitle}>Notifications</Text>}
+          title={<Text style={[styles.sectionTitle, {color: activeColors.regular}]}>Notifications</Text>}
           isOpen={activeAccordion === 3}
           onToggle={() => toggleAccordion(3)}
         >
           {/* Add notifications content here */}
         </Accordion>
-        <View style={styles.divider} />
+        <View style={[styles.divider, {borderBottomColor: activeColors.regular}]} />
 
         <TouchableOpacity
           style={styles.heading}
           onPress={navigateToTermsAndConditions}
         >
-          <Text style={styles.sectionTitle}>Terms and Conditions</Text>
-          <Ionicons name="chevron-forward-outline" size={18} color="white" />
+          <Text style={[styles.sectionTitle, {color: activeColors.regular}]}>Terms and Conditions</Text>
+          <Ionicons name="chevron-forward-outline" size={18} color={activeColors.regular} />
         </TouchableOpacity>
-        <View style={styles.divider} />
+        <View style={[styles.divider, {borderBottomColor: activeColors.regular}]} />
 
         <Accordion
-          title={<Text style={styles.sectionTitle}>Contact Developer</Text>}
+          title={<Text style={[styles.sectionTitle, {color: activeColors.regular}]}>Contact Developer</Text>}
           isOpen={activeAccordion === 5}
           onToggle={() => toggleAccordion(5)}
         >
           {/* Add contact developer content here */}
         </Accordion>
+        <View style={[styles.divider, {borderBottomColor: activeColors.regular}]} />
       </View>
 
       <TouchableOpacity style={styles.button} onPress={clearAsyncStorage}>
@@ -155,7 +168,6 @@ export default function Info() {
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    backgroundColor: "#000",
   },
   header: {
     flexDirection: 'row',
@@ -183,7 +195,6 @@ const styles = StyleSheet.create({
   labelText: {
     fontFamily: 'aldrich',
     fontSize: 18,
-    color: '#fff',
     marginHorizontal: 18,
     top: 4,
   },
@@ -203,7 +214,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     height: 30,
-    color: "#fff",
     fontFamily: "Shippori",
   },
   divider: {
@@ -231,7 +241,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Shippori',
     fontSize: 15,
     textAlign: 'left',
-    color: "#fff",
     paddingLeft: 30,
     paddingBottom: 10,
   },

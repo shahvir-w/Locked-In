@@ -2,8 +2,14 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import React from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
+import { colors } from '../constants/colors';
+import { useContext } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 export default function EmptyHabits({ date }) {
+  const {theme} = useContext(ThemeContext)
+  let activeColors = colors[theme.mode]
+  
   const router = useRouter();
 
   const today = new Date().toLocaleDateString('en-CA'); // Get today's date in "YYYY-MM-DD" format
@@ -15,7 +21,7 @@ export default function EmptyHabits({ date }) {
 
   return (
     <ScrollView style={styles.ItemsWrapper}>
-      <Text style={[styles.emptyText, isPastDate && styles.viewOnlyText]}>
+      <Text style={[styles.emptyText, {color: activeColors.regular}, isPastDate && styles.viewOnlyText]}>
       {isPastDate 
           ? 'NO DATA...\n ...you forgot to open the app'
           : "you have no habits, click the plus \nbelow to add some" }
@@ -40,11 +46,10 @@ const styles = StyleSheet.create({
     fontFamily: 'aldrich',
     textAlign: 'center',
     fontSize: 18,
-    color: '#fff',
     lineHeight: 25,
   },
     viewOnlyText: {
-    color: '#FFD700',
+    color: '#FFA500',
     fontSize: 18,
   },
   addButton: {

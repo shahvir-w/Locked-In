@@ -14,8 +14,14 @@ import { useRouter } from 'expo-router';
 import { doc, deleteDoc, getDoc, updateDoc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { db } from '../configs/FirebaseConfig';
+import { colors } from '../constants/colors';
+import { useContext } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 export default function HabitsScrollView({ habits, remainingTasks, date }) {
+  const {theme} = useContext(ThemeContext);
+  let activeColors = colors[theme.mode];
+  
   const router = useRouter();
 
   const today = new Date().toLocaleDateString('en-CA');
@@ -106,7 +112,7 @@ export default function HabitsScrollView({ habits, remainingTasks, date }) {
 
   const ListHeader = () => (
     <View>
-      <Text style={[styles.tasksText, isPastDate && styles.viewOnlyText]}>
+      <Text style={[styles.tasksText, {color: activeColors.regular}, isPastDate && styles.viewOnlyText]}>
         {isPastDate
           ? 'VIEW ONLY'
           : remainingTasks > 1
@@ -126,6 +132,7 @@ export default function HabitsScrollView({ habits, remainingTasks, date }) {
           <TouchableHighlight
             style={styles.addButton}
             onPress={() => router.push('create-habits')}
+            underlayColor="transparent" 
           >
             <Ionicons name="add-circle-sharp" size={60} color="#7C81FC" />
           </TouchableHighlight>
@@ -163,7 +170,6 @@ const styles = StyleSheet.create({
         fontFamily: 'aldrich',
         textAlign: 'center',
         fontSize: 18,
-        color: '#fff',
         marginBottom: 20,
     },
     viewOnlyText: {

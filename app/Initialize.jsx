@@ -1,11 +1,12 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { useEffect } from 'react';
-import { Colors } from '@/constants/Colors';
 import { useNavigation, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { colors } from '@/constants/colors';
 
 export default function Initialize() {
+  
   const router = useRouter();
 
   const navigation = useNavigation();
@@ -32,7 +33,7 @@ export default function Initialize() {
             style={{ height: 96, width: 88, left: 0 }}
           />
           <View>
-            <Text style={{ fontFamily: 'JockeyOne', fontSize: 41, color: Colors.PURPLE, top: 18, left: -12 }}>
+            <Text style={{ fontFamily: 'JockeyOne', fontSize: 41, color: colors.PURPLE, top: 18, left: -12 }}>
               locked in
             </Text>
           </View>
@@ -41,7 +42,7 @@ export default function Initialize() {
         <Text style={{
             fontFamily: 'Aldrich',
             fontSize: 32,
-            color: Colors.PURPLE,
+            color: colors.PURPLE,
             textAlign: 'center',
             top: -50,
         }}>complete daily {'\n'}goals consistently {'\n'}to be “locked in”</Text>
@@ -51,7 +52,7 @@ export default function Initialize() {
             fontFamily: 'Shippori', 
             fontSize: 14,
             textAlign: 'center', 
-            color: Colors.WHITE 
+            color: colors.WHITE 
             }}>get started!</Text>
         </TouchableOpacity>
       </SafeAreaView>
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   button: {
-    backgroundColor: Colors.PURPLE,
+    backgroundColor: colors.PURPLE,
     height: 54,
     width: 320,
     alignSelf: 'center',

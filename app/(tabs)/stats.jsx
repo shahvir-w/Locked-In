@@ -11,8 +11,14 @@ import LockedInChart from '../../components/ProgressChart';
 import CompletionScoreChart from '../../components/BarChart';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useRouter } from 'expo-router';
+import { colors } from '../../constants/colors';
+import { useContext } from 'react';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 export default function Stats() {
+  const {theme} = useContext(ThemeContext);
+  let activeColors = colors[theme.mode];
+  
   const router = useRouter();
   const mostRecentDate = useMostRecentDate();
   const [score, setScore] = useState(0);
@@ -62,7 +68,7 @@ export default function Stats() {
   }
 
   return (
-    <SafeAreaView style={styles.main}>
+    <SafeAreaView style={[styles.main, {backgroundColor: activeColors.backgroundMain}]}>
         <View style={styles.header}>
           <View style={styles.logoContainer}>
             <Image
@@ -71,7 +77,7 @@ export default function Stats() {
             />
             <Text style={styles.logoText}>locked in</Text>
           </View>
-          <Text style={styles.labelText}>STATISTICS</Text>
+          <Text style={[styles.labelText, {color: activeColors.regular}]}>STATISTICS</Text>
         </View>
       <ScrollView 
       refreshControl={
@@ -82,7 +88,7 @@ export default function Stats() {
       }
       showsVerticalScrollIndicator={false}>
         <View style={styles.progressContainer}>
-          <Text style={styles.progressText}>
+          <Text style={[styles.progressText, { color: activeColors.regular}]}>
             {name}, you are{'\n'}
           </Text>
 
@@ -96,13 +102,13 @@ export default function Stats() {
             value={score}
             progressValueStyle={{
               fontFamily: 'Aldrich',
-              color: '#fff',
+              color: activeColors.regular,
               fontSize: 30,
             }}
             fontSize={10}
             valueSuffix="%"
             activeStrokeColor="#7C81FC"
-            inActiveStrokeColor="#262323"
+            inActiveStrokeColor={activeColors.progressIndicator}
             progressFormatter={(value) => {
               'worklet';
               return value.toFixed(2); // 2 decimal places
@@ -110,7 +116,7 @@ export default function Stats() {
             duration={700}
           />
 
-          <Text style={styles.deleteText}>score is updated once each day</Text>
+          <Text style={styles.updateText}>score is updated once each day</Text>
           </View>
           
           <View style={styles.lineChart}>
@@ -118,7 +124,7 @@ export default function Stats() {
           </View>
             
           {daysTillLockedIn > 0 && (
-            <Text style={styles.regularText}>
+            <Text style={[styles.regularText, {color: activeColors.regular}]}>
             complete 100% of daily tasks {'\n'} for 
             <Text style={styles.purpleText}>
             {' '}{daysTillLockedIn.toString().padStart(2, '0')}
@@ -128,7 +134,7 @@ export default function Stats() {
           </Text>
           )}
           {daysTillLockedIn == 0 && (
-            <Text style={styles.regularText}>
+            <Text style={[styles.regularText, {color: activeColors.regular}]}>
             keep completing daily {'\n'}tasks to stay
             <Text style={styles.purpleText}> locked in</Text>
           </Text>
@@ -139,7 +145,7 @@ export default function Stats() {
           </View>
           <View style={styles.currentStreak}>
           <MaterialCommunityIcons name="fire" size={35} color='#7C81FC' />
-          <Text style={styles.regularText}>
+          <Text style={[styles.regularText, {color: activeColors.regular}]}>
             current streak:{' '}
             <Text style={styles.purpleText}>
             {currentStreak <= 0 ? "00" : currentStreak.toString().padStart(2, '0')}
@@ -156,7 +162,6 @@ export default function Stats() {
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    backgroundColor: '#000',
   },
   header: {
     flexDirection: 'row',
@@ -184,11 +189,10 @@ const styles = StyleSheet.create({
   labelText: {
     fontFamily: 'Aldrich',
     fontSize: 18,
-    color: '#fff',
     marginHorizontal: 18,
     top: 4,
   },
-  deleteText: {
+  updateText: {
     fontFamily: 'aldrich',
     textAlign: 'center',
     fontSize: 15,
@@ -203,13 +207,11 @@ const styles = StyleSheet.create({
   progressText: {
     marginBottom: -10,
     fontFamily: 'Aldrich',
-    color: "#fff",
     fontSize: 25,
     textAlign: 'center',
   },
   regularText: {
     fontFamily: 'Aldrich',
-    color: "#fff",
     fontSize: 18,
     lineHeight: 30,
     textAlign: 'center',

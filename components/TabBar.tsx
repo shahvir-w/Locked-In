@@ -1,12 +1,16 @@
 import { View, Text, TouchableOpacity, StyleSheet, LayoutChangeEvent } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
-import { Colors } from '@/constants/Colors';
+import { colors } from '@/constants/colors';
 import TabBarButton from './TabBarButton';
 import { useState } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { useContext } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 export function TabBar({ state, descriptors, navigation } : BottomTabBarProps) {
-    
+  const {theme} = useContext(ThemeContext);
+    let activeColors = colors[theme.mode]
+
     const [dimensions, setDimensions] = useState({height: 20, width:100})
     const buttonWidth = dimensions.width / state.routes.length;
 
@@ -26,7 +30,7 @@ export function TabBar({ state, descriptors, navigation } : BottomTabBarProps) {
 
 
     return (
-    <View onLayout={onTabberLayout} style={styles.tabbar}>
+    <View onLayout={onTabberLayout} style={[styles.tabbar, {backgroundColor: activeColors.backgroundSecondary}]}>
         <Animated.View style={[animatedStyle, {
             position: 'absolute',
             backgroundColor: '#7C81FC',
@@ -90,7 +94,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: "#161414",
         marginHorizontal: 80,
         paddingVertical: 10,
         borderRadius: 35,

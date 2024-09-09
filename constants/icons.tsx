@@ -2,6 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { colors } from './colors';
 
 export const TabIcons = {
     habits: (props: any) => (
@@ -17,9 +18,9 @@ export const TabIcons = {
 
 export const HabitIcons = {
     true: (props: any) => (
-        <MaterialCommunityIcons name="checkbox-outline" size={30} color="white" />
+        <MaterialCommunityIcons name="checkbox-outline" size={30} {...props} />
     ),
     false: (props: any) => (
-        <MaterialCommunityIcons name="checkbox-blank-outline" size={30} color="white" />
+        <MaterialCommunityIcons name="checkbox-blank-outline" size={30} {...props}/>
     )
 }
