@@ -45,7 +45,7 @@ export default function Initialize() {
             color: colors.PURPLE,
             textAlign: 'center',
             top: -50,
-        }}>complete daily {'\n'}goals consistently {'\n'}to be “locked in”</Text>
+        }}>complete daily {'\n'}tasks consistently {'\n'}to be “locked in”</Text>
 
         <TouchableOpacity style={styles.button} onPress={handleNextPress}>
           <Text style={{ 

@@ -66,6 +66,7 @@ export default function Stats() {
           <Text style={[styles.labelText, {color: activeColors.regular}]}>STATISTICS</Text>
         </View>
       <ScrollView 
+      showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl
         refreshing={refresh}
@@ -74,7 +75,7 @@ export default function Stats() {
         colors={[activeColors.regular]}
         />
       }
-      showsVerticalScrollIndicator={false}>
+      >
         
         <View style={styles.progressContainer}>
           

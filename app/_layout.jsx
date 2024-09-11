@@ -58,6 +58,12 @@ export default function RootLayout() {
           gestureEnabled: true 
         }}
       />
+      <Stack.Screen 
+        name="scoreCalculationExp" 
+        options={{
+          gestureEnabled: true 
+        }}
+      />
     </Stack>
     </ThemeContext.Provider>
   );

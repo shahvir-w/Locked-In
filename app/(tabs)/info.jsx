@@ -13,7 +13,6 @@ import { deleteAccountAndData, fetchOldestDate, fetchUserEmail, fetchUserName } 
 import * as Haptics from 'expo-haptics';
 
 
-// Accordion Component
 const Accordion = ({ title, children, isOpen, onToggle }) => {
   const {theme} = useContext(ThemeContext);
   let activeColors = colors[theme.mode]
@@ -33,7 +32,6 @@ const Accordion = ({ title, children, isOpen, onToggle }) => {
   );
 };
 
-// Main Info Component
 export default function Info() {
   const [activeAccordion, setActiveAccordion] = useState(null);
   const router = useRouter();
@@ -60,19 +58,8 @@ export default function Info() {
 };
   
 
-  // Toggles the accordion, ensuring only one can be open at a time
   const toggleAccordion = (index) => {
     setActiveAccordion((prevIndex) => (prevIndex === index ? null : index));
-  };
-
-  // Navigate to Locked In Score Calculation page
-  const navigateToLockedInScore = () => {
-    router.push('/LockedInScore'); // Adjust path as needed
-  };
-
-  // Navigate to Terms and Conditions page
-  const navigateToTermsAndConditions = () => {
-    router.push('/TermsAndConditions'); // Adjust path as needed
   };
 
   const { theme, updateTheme } = useContext(ThemeContext);
@@ -137,6 +124,25 @@ export default function Info() {
     </View>
   );
 
+  const notificationsBody = (
+    <View>
+      <Text style={styles.regularPurpText}>
+        coming soon!
+      </Text>
+    </View>
+  );
+
+  const contactBody = (
+    <View>
+      <Text style={[styles.accountText, {color: activeColors.regular}]}>
+        If you have any issues, suggestions, or general inquiries, feel free to reach out.
+        {'\n'}
+        {'\n'}
+        Contact at <Text style={styles.purpleText}>s3wahab@uwaterloo.ca</Text>
+      </Text>
+    </View>
+  );
+
   return (
     <SafeAreaView style={[styles.main, {backgroundColor: activeColors.backgroundMain}]}>
       <View style={styles.header}>
@@ -168,7 +174,7 @@ export default function Info() {
 
         <TouchableOpacity
           style={styles.heading}
-          onPress={navigateToLockedInScore}
+          onPress={() => router.push('../scoreCalculationExp')}
         >
           <Text style={[styles.sectionTitle, {color: activeColors.regular}]}>Locked In Score Calculation</Text>
           <Ionicons name="chevron-forward-outline" size={18} color={activeColors.regular} />
@@ -180,17 +186,8 @@ export default function Info() {
           isOpen={activeAccordion === 3}
           onToggle={() => toggleAccordion(3)}
         >
-          {/* Add notifications content here */}
+          {notificationsBody}
         </Accordion>
-        <View style={[styles.divider, {borderBottomColor: activeColors.regular}]} />
-
-        <TouchableOpacity
-          style={styles.heading}
-          onPress={navigateToTermsAndConditions}
-        >
-          <Text style={[styles.sectionTitle, {color: activeColors.regular}]}>Terms and Conditions</Text>
-          <Ionicons name="chevron-forward-outline" size={18} color={activeColors.regular} />
-        </TouchableOpacity>
         <View style={[styles.divider, {borderBottomColor: activeColors.regular}]} />
 
         <Accordion
@@ -198,7 +195,7 @@ export default function Info() {
           isOpen={activeAccordion === 5}
           onToggle={() => toggleAccordion(5)}
         >
-          {/* Add contact developer content here */}
+          {contactBody}
         </Accordion>
         <View style={[styles.divider, {borderBottomColor: activeColors.regular}]} />
       </View>
@@ -331,4 +328,13 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontFamily: "JockeyOne",
   },
+  regularPurpText: {
+    fontFamily: 'Shippori',
+    fontSize: 15,
+    textAlign: 'left',
+    paddingLeft: 30,
+    marginBottom: 20,
+    color: colors.PURPLE,
+    alignItems: 'center',
+  }
 });
