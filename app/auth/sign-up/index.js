@@ -40,6 +40,7 @@ export default function SignIn() {
             });
             
             await AsyncStorage.setItem('userUID', user.uid);
+            await AsyncStorage.setItem('userName', name);
             initializeFirstDay();
 
             if (user) router.replace('/habits');

@@ -27,7 +27,8 @@ export default function Stats() {
       const uid = await AsyncStorage.getItem('userUID');
       
       if (uid) {
-        const name = await fetchUserName(uid);
+        const name = await AsyncStorage.getItem('userName');
+
         setName(name);
         const [lockedInScore, streak, daysTillLockedInCalc] = await fetchUserLockedInScore(uid, mostRecentDate);
         setScore(lockedInScore);

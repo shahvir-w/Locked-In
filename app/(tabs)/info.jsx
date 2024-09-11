@@ -89,7 +89,7 @@ export default function Info() {
     const fetchUser = async () => {
       const uid = await AsyncStorage.getItem('userUID');
       const firstDay = await fetchOldestDate(uid);
-      const userName = await fetchUserName(uid)
+      const userName = await AsyncStorage.getItem('userName');
       const userEmail = await fetchUserEmail(uid)
 
       setOldestDate(firstDay);
@@ -250,6 +250,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingVertical: 15,
+    paddingHorizontal: 3,
+    
   },
   list: {
     overflow: 'hidden',

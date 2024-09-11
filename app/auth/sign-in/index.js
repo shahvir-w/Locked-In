@@ -7,6 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../configs/FirebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { fetchUserName } from '../../../backend/FirebaseUtils';
 
 export default function SignIn() {
   const router = useRouter();
@@ -26,6 +27,9 @@ export default function SignIn() {
 
       // Store the user ID in AsyncStorage for persistence
       await AsyncStorage.setItem('userUID', user.uid);
+
+      const name = await fetchUserName(user.uid);
+      await AsyncStorage.setItem('userName', name);
 
       if (user) router.replace('/habits');
     } catch(error) {
