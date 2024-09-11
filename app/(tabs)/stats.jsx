@@ -10,7 +10,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { colors } from '../../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from '../_layout';
-import { fetchUserName, fetchUserLockedInScore } from '../../backend/FirebaseUtils';
+import { fetchUserLockedInScore } from '../../backend/FirebaseUtils';
 
 export default function Stats() {
   const {theme} = useContext(ThemeContext);
@@ -65,6 +65,8 @@ export default function Stats() {
         <RefreshControl
         refreshing={refresh}
         onRefresh={() => pullMe()}
+        tintColor={activeColors.regular}
+        colors={[activeColors.regular]}
         />
       }
       showsVerticalScrollIndicator={false}>

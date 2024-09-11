@@ -8,6 +8,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../configs/FirebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fetchUserName } from '../../../backend/FirebaseUtils';
+import * as Haptics from 'expo-haptics';
+
 
 export default function SignIn() {
   const router = useRouter();
@@ -31,7 +33,10 @@ export default function SignIn() {
       const name = await fetchUserName(user.uid);
       await AsyncStorage.setItem('userName', name);
 
-      if (user) router.replace('/habits');
+      if (user) {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+        router.replace('/habits');
+    }
     } catch(error) {
       const errorMessage = error.message;
       console.log(errorMessage);

@@ -11,6 +11,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
 import { initializeFirstDay } from '../../../backend/CreateDays';
+import * as Haptics from 'expo-haptics';
+
 
 
 export default function SignIn() {
@@ -43,8 +45,10 @@ export default function SignIn() {
             await AsyncStorage.setItem('userName', name);
             initializeFirstDay();
 
-            if (user) router.replace('/habits');
-
+            if (user) {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+                router.replace('/habits');
+            }
         } catch(error) {
             const errorMessage = error.message;
             console.log(errorMessage);

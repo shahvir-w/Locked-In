@@ -10,6 +10,8 @@ import { colors } from "../../constants/colors";
 import { useContext } from 'react';
 import { ThemeContext } from '../_layout';
 import { deleteAccountAndData, fetchOldestDate, fetchUserEmail, fetchUserName } from '../../backend/FirebaseUtils';
+import * as Haptics from 'expo-haptics';
+
 
 // Accordion Component
 const Accordion = ({ title, children, isOpen, onToggle }) => {
@@ -38,6 +40,7 @@ export default function Info() {
 
   const clearAsyncStorage = async () => {
     await AsyncStorage.clear();
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
     router.replace('../Initialize'); 
   };
 

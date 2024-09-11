@@ -81,7 +81,7 @@ export default function LockedInChart() {
 
   return (
     <View style={[styles.container, {backgroundColor: activeColors.backgroundSecondary}]}>
-      <Text style={[styles.title, {color: activeColors.regular}]}>locked in Score</Text>
+      <Text style={[styles.title, {color: activeColors.regular}]}>locked in score</Text>
       
       <View style={styles.dateScroll}>
         <TouchableOpacity onPress={handleDateLeft}

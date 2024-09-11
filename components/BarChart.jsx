@@ -81,7 +81,7 @@ export default function CompletionScoreChart( {refresh} ) {
 
   return (
     <View style={[styles.container, {backgroundColor: activeColors.backgroundSecondary}]}>
-      <Text style={[styles.title, {color: activeColors.regular}]}>task completion</Text>
+      <Text style={[styles.title, {color: activeColors.regular}]}>completion score</Text>
 
       <View style={styles.dateScroll}>
         <TouchableOpacity onPress={handleDateLeft}
