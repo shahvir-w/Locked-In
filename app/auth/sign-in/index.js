@@ -35,6 +35,7 @@ export default function SignIn() {
 
       if (user) {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+        await new Promise(resolve => setTimeout(resolve, 200));
         router.replace('/habits');
     }
     } catch(error) {

@@ -39,6 +39,7 @@ export default function Info() {
   const clearAsyncStorage = async () => {
     await AsyncStorage.clear();
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+    await new Promise(resolve => setTimeout(resolve, 200));
     router.replace('../Initialize'); 
   };
 
