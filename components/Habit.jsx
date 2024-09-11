@@ -7,7 +7,7 @@ import { db } from '../configs/FirebaseConfig';
 import { colors } from '../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from '../app/_layout';
-
+import * as Haptics from 'expo-haptics';
 
 const Habit = (props) => {
     const {theme} = useContext(ThemeContext)
@@ -19,12 +19,19 @@ const Habit = (props) => {
     
     const toggleCheckBox = async () => {
         if (props.isPastDate || isLoading) return;
-        
+
+
         setIsLoading(true);
         
         try {
             const newCheckedState = !isChecked;
             setIsChecked(newCheckedState);
+
+            if (newCheckedState) {
+                Haptics.notificationAsync(
+                    Haptics.NotificationFeedbackType.success
+                )
+            }
 
             const uid = await AsyncStorage.getItem('userUID');
             const today = new Date().toLocaleDateString();

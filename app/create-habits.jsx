@@ -2,13 +2,12 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Pressa
 import React, { useState } from 'react';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useRouter } from 'expo-router';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../configs/FirebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from './_layout';
 import { addHabit } from '../backend/FirebaseUtils';
+import * as Haptics from 'expo-haptics';
 
 export default function CreateHabit() {
   const router = useRouter();
@@ -19,6 +18,10 @@ export default function CreateHabit() {
   let activeColors = colors[theme.mode]
 
   const handleConfirm = async () => {
+    Haptics.notificationAsync(
+      Haptics.NotificationFeedbackType.success
+    )
+
     const uid = await AsyncStorage.getItem('userUID');
     if (habit.trim() === '') {
       return;

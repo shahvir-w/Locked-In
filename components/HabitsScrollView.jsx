@@ -15,6 +15,7 @@ import { colors } from '../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from '../app/_layout';
 import { deleteHabit } from '../backend/FirebaseUtils';
+import * as Haptics from 'expo-haptics';
 
 export default function HabitsScrollView({ habits, remainingTasks, date }) {
   const {theme} = useContext(ThemeContext);
@@ -28,10 +29,12 @@ export default function HabitsScrollView({ habits, remainingTasks, date }) {
 
   const handleDelete = async (name) => {
     if (deleteInProgress) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
     deleteInProgress = true;
   
     const user = await AsyncStorage.getItem('userUID');
     await deleteHabit(user, name, today);
+
     deleteInProgress = false;
   }
 
@@ -43,9 +46,7 @@ export default function HabitsScrollView({ habits, remainingTasks, date }) {
     const swipeThreshold = -Dimensions.get('window').width / 1.75;
 
     if (value < swipeThreshold) {
-        setTimeout(() => {
-            handleDelete(key);
-        }, 100);
+      handleDelete(key);
     }
 };
 
