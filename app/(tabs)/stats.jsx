@@ -21,6 +21,7 @@ export default function Stats() {
   const [name, setName] = useState('');
   const [daysTillLockedIn, setDaysTillLockedIn] = useState(0);
   const [currentStreak, setCurrentStreak] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
     const fetchUserData = async () => {
@@ -31,12 +32,16 @@ export default function Stats() {
 
         setName(name);
         const [lockedInScore, streak, daysTillLockedInCalc] = await fetchUserLockedInScore(uid, mostRecentDate);
+        
         setScore(lockedInScore);
         setCurrentStreak(streak);
         setDaysTillLockedIn(daysTillLockedInCalc);
+
+        setIsLoading(false);
       };
     }
 
+    setIsLoading(true);
     fetchUserData();
   }, [mostRecentDate]);
 
@@ -70,15 +75,21 @@ export default function Stats() {
         />
       }
       showsVerticalScrollIndicator={false}>
+        
         <View style={styles.progressContainer}>
-          <Text style={[styles.progressText, { color: activeColors.regular}]}>
-            {name}, you are{'\n'}
-          </Text>
+          
+        {!isLoading && (
+          <View>
+            <Text style={[styles.progressText, { color: activeColors.regular}]}>
+              {name}, you are{'\n'}
+            </Text>
 
-          <Text  style={[styles.progressText, 
-                { color: score >= 90 ? "#008000" : 	"#8B0000" }, {marginBottom: 20}]}>
-          {score >= 90 ? 'locked in' : 'not locked in'}
-          </Text>
+            <Text  style={[styles.progressText, 
+                  { color: score >= 90 ? "#008000" : 	"#8B0000" }, {marginBottom: 20}]}>
+            {score >= 90 ? 'locked in' : 'not locked in'}
+            </Text>
+          </View>
+        )}
 
           <CircularProgress
             radius={120}

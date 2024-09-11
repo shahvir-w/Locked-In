@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import EmptyHabits from '../../components/EmptyHabits';
 import HabitsScrollView from '../../components/HabitsScrollView';
@@ -20,6 +20,7 @@ export default function Habits() {
   const [date, setDate] = useState(today);
   const mostRecentDate = useMostRecentDate();
   const [oldestDate, setOldestDate] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const {theme} = useContext(ThemeContext)
   let activeColors = colors[theme.mode]
@@ -58,10 +59,13 @@ export default function Habits() {
       setOldestDate(firstDay);
 
       const unsubscribe = await loadHabits(uid, date, setUserHabits, setRemainingTasks);
-      return unsubscribe;
-      
+      await new Promise(resolve => setTimeout(resolve, 140));
+      setIsLoading(false);
+
+      return () => unsubscribe();
     };
-  
+
+    setIsLoading(true);
     fetchHabits();
   }, [date]);
 
@@ -94,10 +98,12 @@ export default function Habits() {
           </View>
         </View>
         
-        {userHabits.length === 0 ? (
-          <EmptyHabits date={date} />
-        ) : (
-          <HabitsScrollView habits={userHabits} remainingTasks={remainingTasks} date={date} />
+        {!isLoading && (
+          userHabits.length === 0 ? (
+            <EmptyHabits date={date} />
+          ) : (
+            <HabitsScrollView habits={userHabits} remainingTasks={remainingTasks} date={date} />
+          )
         )}
       </SafeAreaView>
     </GestureHandlerRootView>
