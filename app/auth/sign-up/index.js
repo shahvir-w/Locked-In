@@ -40,7 +40,7 @@ export default function SignIn() {
             });
             
             await AsyncStorage.setItem('userUID', user.uid);
-            initializeFirstDay(today);
+            initializeFirstDay();
 
             if (user) router.replace('/habits');
 
@@ -104,6 +104,7 @@ export default function SignIn() {
                         style={[styles.input]}
                         placeholder="Enter your first name"
                         onChangeText={(text)=>setName(text)}    
+                        maxLength={15}
                     />
                     </View>
 

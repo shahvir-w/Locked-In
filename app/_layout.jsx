@@ -47,6 +47,9 @@ export default function RootLayout() {
     }}>
       <Stack.Screen 
       name="(tabs)" 
+      options={{
+        animation: 'none',
+      }}
       />
       <Stack.Screen 
         name="create-habits" 
@@ -54,7 +57,6 @@ export default function RootLayout() {
           ...TransitionPresets.ModalSlideFromBottomIOS,
           gestureEnabled: true 
         }}
-        
       />
     </Stack>
     </ThemeContext.Provider>

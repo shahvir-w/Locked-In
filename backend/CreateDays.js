@@ -2,12 +2,13 @@ import { collection, getDocs, setDoc, doc, getDoc } from 'firebase/firestore';
 import { db } from '../configs/FirebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const initializeFirstDay = async (date) => {
+export const initializeFirstDay = async () => {
   const uid = await AsyncStorage.getItem('userUID');
   
-  const targetDate = new Date(date);
-  const formattedTargetDate = targetDate.toLocaleDateString(); // Format as "YYYY-MM-DD"
+  const firstDay = new Date()
+  const formattedTargetDate = firstDay.toLocaleDateString(); // Format as "YYYY-MM-DD"
   const targetDateRef = doc(db, 'users', uid, 'days', formattedTargetDate);
+  
   await setDoc(targetDateRef, {
     completionScore: 0,
     availableScore: 0,
@@ -15,22 +16,14 @@ export const initializeFirstDay = async (date) => {
     lockedInScore: 0,
   });
   
+  const date1 = new Date(firstDay);
+  var diff = date1.getDate() - date1.getDay() + (date1.getDay() === 0 ? -6 : 1);
+  startOfWeek = new Date(date1.setDate(diff));
 
-  /*
-  console.log("Current Date and Time:", targetDate.toString());
-  console.log("Day of the Week (0 = Sunday, 1 = Monday, ...):", targetDate.getDay());
-
-  // Initialize the target date document with the required fields
-  
-
-  // Determine the start of the week
-
-  
-  // Get days between start of the week and target date
-  const daysInBetween = getDaysBetweenDates(startOfWeek, targetDate);
+  const daysInBetween = getDaysBetweenDates(startOfWeek, firstDay);
 
   // Loop through the days between startOfWeek and targetDate to initialize each day's document
-  for (let i = 0; i <= daysInBetween; i++) {
+  for (let i = 0; i < daysInBetween; i++) {
     const intermediateDate = new Date(startOfWeek);
     intermediateDate.setDate(startOfWeek.getDate() + i);
     const formattedIntermediateDate = intermediateDate.toISOString().split('T')[0]; // Format as "YYYY-MM-DD"
@@ -45,7 +38,7 @@ export const initializeFirstDay = async (date) => {
       lockedInScore: 0,
     });
   }
-    */
+    
 };
 
 
@@ -69,6 +62,9 @@ export function getDaysBetweenDates(date1, date2) {
   // Reset the time part of both dates to midnight
   const d1 = new Date(date1);
   const d2 = new Date(date2);
+
+  d1.setHours(0, 0, 0, 0); // Set time to midnight for date1
+  d2.setHours(0, 0, 0, 0); // Set time to midnight for date2
   
   // Calculate the difference in milliseconds
   const timeDifference = Math.abs(d2 - d1); // absolute difference in time
@@ -123,7 +119,7 @@ export const duplicateHabits = async (sourceDate, targetDate) => {
 
           const intermediateDate = new Date(sourceDate);
           intermediateDate.setDate(intermediateDate.getDate() + i);
-          const formattedDate = intermediateDate.toLocaleDateString(); // Format as "YYYY-MM-DD"
+          const formattedDate = intermediateDate.toISOString().split('T')[0];
 
           // Adjust streak based on daily score
           if (currentStreak >= 0 && dailyScore > 0.9) {
@@ -162,8 +158,6 @@ export const duplicateHabits = async (sourceDate, targetDate) => {
           console.log(`New streakk: ${currentStreak}`);
           console.log(`New LockedInScore: ${newLockedInScore}`);
         } 
-
-        // Update the target day's document with the new scores and streak
         
       }
       

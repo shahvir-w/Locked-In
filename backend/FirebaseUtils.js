@@ -26,14 +26,15 @@ export const deleteAccountAndData = async (uid) => {
 
 
   const auth = getAuth();
-    const user = auth.currentUser;
-
-    deleteUser(user).then(() => {
-    console.log("deleted user")
-    }).catch((error) => {
-    // An error ocurred
-    // ...
-    });
+  const user = auth.currentUser;
+  
+  ("should delete user:")
+  deleteUser(user).then(() => {
+  console.log("deleted user")
+  }).catch((error) => {
+  // An error ocurred
+  // ...
+  });
 };
 
 export const addHabit = async (uid, habit, importance, router) => {
@@ -103,6 +104,16 @@ export const fetchUserName = async (uid) => {
         const name = userData.name.toLowerCase();
         return name;
     }
+}
+
+export const fetchUserEmail = async (uid) => {
+  const userRef = doc(db, 'users', uid);
+  const userSnap = await getDoc(userRef);
+  if (userSnap.exists()) {
+      const userData = userSnap.data();
+      const email = userData.email;
+      return email;
+  }
 }
 
 export const fetchUserLockedInScore = async (uid, mostRecentDate) => {
@@ -208,4 +219,14 @@ export const fetchLockedInScores = async (uid, setLineData, startOfWeek) => {
     });
   
     setLineData(updatedLineData);
-  };
+};
+
+export const fetchOldestDate = async (uid) => {
+  const userRef = doc(db, 'users', uid);
+  const userSnap = await getDoc(userRef);
+  if (userSnap.exists()) {
+      const userData = userSnap.data();
+      const firstDay = userData.createdAt
+      return firstDay;
+  }
+}

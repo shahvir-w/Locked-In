@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, Switch } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -9,7 +9,7 @@ import Collapsible from 'react-native-collapsible';
 import { colors } from "../../constants/colors";
 import { useContext } from 'react';
 import { ThemeContext } from '../_layout';
-import { deleteAccountAndData } from '../../backend/FirebaseUtils';
+import { deleteAccountAndData, fetchOldestDate, fetchUserEmail, fetchUserName } from '../../backend/FirebaseUtils';
 
 // Accordion Component
 const Accordion = ({ title, children, isOpen, onToggle }) => {
@@ -42,13 +42,19 @@ export default function Info() {
   };
 
   const deleteAccount = async () => {
-    const uid = await AsyncStorage.getItem('userUID');
-    await deleteAccountAndData(uid);
-
-    await AsyncStorage.clear();
-    router.replace('../Initialize');
-
-  }
+    try {
+      const uid = await AsyncStorage.getItem('userUID');
+      
+      await deleteAccountAndData(uid);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+  
+      await AsyncStorage.clear();
+      router.replace('../Initialize');
+      
+    } catch (error) {
+      console.error("Error during account deletion:", error);
+    }
+};
   
 
   // Toggles the accordion, ensuring only one can be open at a time
@@ -75,15 +81,43 @@ export default function Info() {
     setIsLightModeEnabled((previousState) => !previousState);
   }
 
+  const [oldestDate, setOldestDate] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+   
+  useEffect(() => {
+    const fetchUser = async () => {
+      const uid = await AsyncStorage.getItem('userUID');
+      const firstDay = await fetchOldestDate(uid);
+      const userName = await fetchUserName(uid)
+      const userEmail = await fetchUserEmail(uid)
+
+      setOldestDate(firstDay);
+      setName(userName);
+      setEmail(userEmail)
+    };
+  
+    fetchUser();
+  }, []);
+
   // Account Section Content
   const accountBody = (
     <View>
-      <Text style={[styles.accountText, {color: activeColors.regular}]}>Name: </Text>
-      <Text style={[styles.accountText, {color: activeColors.regular}]}>Email: </Text>
+      <Text style={[styles.accountText, {color: activeColors.regular}]}>
+        Name:  <Text style={styles.purpleText}>{name}</Text>
+      </Text>
+      <Text style={[styles.accountText, {color: activeColors.regular}]}>
+        Email:  <Text style={styles.purpleText}>{email}</Text>
+      </Text>
+      <Text style={[styles.accountText, {color: activeColors.regular}]}>
+        Date joined:  <Text style={styles.purpleText}>{oldestDate}</Text>
+      </Text>
+
       <TouchableOpacity style={styles.deleteButton} onPress={deleteAccount}>
         <Text style={styles.deleteButtonText}>delete account</Text>
       </TouchableOpacity>
     </View>
+    
   );
 
   const appearanceBody = (
@@ -253,6 +287,11 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     paddingBottom: 10,
   },
+  purpleText: {
+    fontFamily: 'Shippori',
+    fontSize: 15,
+    color: colors.PURPLE,
+  },
   deleteButton: {
     backgroundColor: "#8B0000",
     height: 50,
@@ -261,6 +300,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     marginBottom: 20,
+    marginTop: 10,
   },
   deleteButtonText: {
     fontFamily: 'Shippori',

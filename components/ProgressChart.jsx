@@ -4,11 +4,10 @@ import { LineChart } from 'react-native-gifted-charts';
 import { ruleTypes } from 'gifted-charts-core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import useOldestDate from '../backend/FindOldestDate';
 import { colors } from '../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from '../app/_layout';
-import { fetchLockedInScores } from '../backend/FirebaseUtils';
+import { fetchLockedInScores, fetchOldestDate } from '../backend/FirebaseUtils';
 
 export default function LockedInChart() {
   const {theme} = useContext(ThemeContext);
@@ -20,9 +19,9 @@ export default function LockedInChart() {
   const [day, setDay] = useState(today);
   const [startDay, setStartDay] = useState("");
   const [endDay, setEndDay] = useState("");
-  const oldestDate = useOldestDate();
+  const [oldestDate, setOldestDate] = useState("");
 
-   const determineDate = (selectedDay) => {
+  const determineDate = (selectedDay) => {
     const dayOfWeek = selectedDay.getDay();
     const startOfWeek = new Date(selectedDay);
     startOfWeek.setDate(selectedDay.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
@@ -36,19 +35,36 @@ export default function LockedInChart() {
 
     return startOfWeek;
   }
-
   
   const handleDateLeft = () => {
-    const newDate = new Date(day);
+    const newDate = day;
     newDate.setDate(day.getDate() - 7); // Move one week back
-    const oldestStartDay = (determineDate(new Date("2024-09-07")));
-    setDay(newDate);
+    var diff = newDate.getDate() - newDate.getDay() + (newDate.getDay() === 0 ? -6 : 1);
+    dateStartOfWeek = new Date(newDate.setDate(diff));
+
+    const oldest = new Date(oldestDate);
+    var diff = oldest.getDate() - oldest.getDay() + (oldest.getDay() === 0 ? -6 : 1);
+    oldestStartOfWeek = new Date(oldest.setDate(diff));
+
+    if (dateStartOfWeek >= oldestStartOfWeek) setDay(newDate);
+    else newDate.setDate(day.getDate() + 7);
+    console.log("new", dateStartOfWeek)
+    console.log("oldest", oldestStartOfWeek)
   };
 
   const handleDateRight = () => {
-    const newDate = new Date(day);
-    newDate.setDate(day.getDate() + 7); // Move one week forwar
-    setDay(newDate);
+    const newDate = day;
+    newDate.setDate(day.getDate() + 7); // Move one week forward
+    var diff = newDate.getDate() - newDate.getDay() + (newDate.getDay() === 0 ? -6 : 1);
+    dateStartOfWeek = new Date(newDate.setDate(diff));
+
+    var diff = today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1);
+    TodayStartOfWeek = new Date(today.setDate(diff));
+
+    if (dateStartOfWeek <= TodayStartOfWeek) setDay(newDate);
+    else newDate.setDate(day.getDate() - 7);
+    console.log("new", dateStartOfWeek)
+    console.log("today", TodayStartOfWeek)
   };
 
   useEffect(() => {
@@ -56,6 +72,8 @@ export default function LockedInChart() {
       const uid = await AsyncStorage.getItem('userUID');
       const startOfWeek = determineDate(day);
       await fetchLockedInScores(uid, setLineData, startOfWeek);
+      const firstDay = await fetchOldestDate(uid);
+      setOldestDate(firstDay);
     };
 
     fetchScores();

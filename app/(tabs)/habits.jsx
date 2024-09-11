@@ -4,7 +4,6 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import EmptyHabits from '../../components/EmptyHabits';
 import HabitsScrollView from '../../components/HabitsScrollView';
 import { loadHabits } from '../../backend/FirebaseUtils';
-import useOldestDate from '../../backend/FindOldestDate';
 import useMostRecentDate from '../../backend/FindRecentDate';
 import { duplicateHabits } from '../../backend/CreateDays';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -12,14 +11,15 @@ import { colors } from "../../constants/colors"
 import { useContext } from 'react';
 import { ThemeContext } from '../_layout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { fetchOldestDate } from '../../backend/FirebaseUtils';
 
 export default function Habits() {
   const [userHabits, setUserHabits] = useState([]);
   const [remainingTasks, setRemainingTasks] = useState(0);
   const today = new Date().toLocaleDateString();
   const [date, setDate] = useState(today);
-  const oldestDate = useOldestDate();
   const mostRecentDate = useMostRecentDate();
+  const [oldestDate, setOldestDate] = useState("");
 
   const {theme} = useContext(ThemeContext)
   let activeColors = colors[theme.mode]
@@ -54,8 +54,12 @@ export default function Habits() {
   useEffect(() => {
     const fetchHabits = async () => {
       const uid = await AsyncStorage.getItem('userUID');
+      const firstDay = await fetchOldestDate(uid);
+      setOldestDate(firstDay);
+
       const unsubscribe = await loadHabits(uid, date, setUserHabits, setRemainingTasks);
       return unsubscribe;
+      
     };
   
     fetchHabits();

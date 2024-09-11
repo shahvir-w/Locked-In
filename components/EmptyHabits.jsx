@@ -23,7 +23,7 @@ export default function EmptyHabits({ date }) {
     <ScrollView style={styles.ItemsWrapper}>
       <Text style={[styles.emptyText, {color: activeColors.regular}, isPastDate && styles.viewOnlyText]}>
       {isPastDate 
-          ? 'NO DATA...\n ...you forgot to open the app'
+          ? 'NO DATA...\n ...you forgot to add tasks'
           : "you have no tasks, click the plus \nbelow to add some" }
       </Text>
 
