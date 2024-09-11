@@ -13,20 +13,18 @@ import { doc, setDoc } from 'firebase/firestore';
 import { initializeFirstDay } from '../../../backend/CreateDays';
 import * as Haptics from 'expo-haptics';
 
-
-
 export default function SignIn() {
     const router = useRouter();
 
     const [name, setName] = useState();
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
-    const [isvalid, setIsValid] = useState(true);
     const today = new Date().toLocaleDateString();
+    const [warning, setWarning] = useState("");
 
     const OnCreateAccount= async () => {
         if (!name || !email || !password) { 
-            setIsValid(false);
+            setWarning('Please enter all feilds')
             return;
         }
 
@@ -51,9 +49,18 @@ export default function SignIn() {
             }
         } catch(error) {
             const errorMessage = error.message;
-            console.log(errorMessage);
-            setIsValid(false);
-        };
+            if (errorMessage.includes('auth/invalid-email')) {
+                setWarning('Invalid email');
+              } else if (errorMessage.includes('auth/invalid-credential')) {
+                setWarning('Email or password is incorrect');
+              } else if (errorMessage.includes('auth/email-already-in-use')) {
+                setWarning('Email in use, consider signing in');
+              }
+              else {
+                setWarning('Sign-in failed. Please try again.');
+              }
+              console.log(errorMessage);
+        }
     }
     
     return (
@@ -144,8 +151,17 @@ export default function SignIn() {
                         secureTextEntry={true}
                         onChangeText={(text) => setPassword(text)}
                         />
+                    
+                        {warning.length > 0 && (
+                            <Text style={styles.warningText}>
+                            {warning}
+                            </Text>
+                        )}
+                
                     </View>
                     
+                    
+
                     <TouchableOpacity style={styles.button}
                     onPress={OnCreateAccount}
                     >
@@ -154,7 +170,7 @@ export default function SignIn() {
                         fontSize: 14,
                         textAlign: 'center',
                         color: colors.WHITE,
-                    }}>{isvalid ? "sign up" : "invalid, try again"}</Text>
+                    }}>sign up</Text>
                     </TouchableOpacity>
 
                 </SafeAreaView>
@@ -209,5 +225,12 @@ const styles = StyleSheet.create({
     marginTop: 35,
     justifyContent: 'center',
     top: 5,
+  },
+  warningText: {
+    color: 'red',
+    marginTop: 20,
+    marginBottom: -25,
+    alignSelf: 'center',
+    fontFamily: 'Shippori',
   }
 });

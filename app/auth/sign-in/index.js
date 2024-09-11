@@ -16,11 +16,11 @@ export default function SignIn() {
 
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const [isvalid, setIsValid] = useState(true);
+  const [warning, setWarning] = useState("");
 
   const OnSignIn = async () => {
-    if (!email || !password) { 
-      setIsValid(false);
+    if (!email || !password) {
+      setWarning('Please enter email and password');
       return;
     }
     try {
@@ -39,10 +39,16 @@ export default function SignIn() {
     }
     } catch(error) {
       const errorMessage = error.message;
+      if (errorMessage.includes('auth/invalid-email')) {
+        setWarning('Invalid email');
+      } else if (errorMessage.includes('auth/invalid-credential')) {
+        setWarning('Email or password is incorrect');
+      } else {
+        setWarning('Sign-in failed. Please try again.');
+      }
       console.log(errorMessage);
-      setIsValid(false);
-    };
-  }
+    }
+  };
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
@@ -53,7 +59,6 @@ export default function SignIn() {
       end={{ x: 0.5, y: 1 }}
     >
       <SafeAreaView style={[styles.main]}>
-        
         <View style={styles.container}>
           <Image source={require('../../../assets/images/Locked-In-Logo.png')}
             style={{
@@ -74,70 +79,73 @@ export default function SignIn() {
         </View>
         
         <View>
-        <Text style={{
-            fontFamily: 'Aldrich',
-            fontSize: 32,
-            color: colors.PURPLE,
-            textAlign: 'center',
-            top: -60,
-        }}>welcome back!</Text>
           <Text style={{
-              fontFamily: 'Shippori',
-              fontSize: 17,
+              fontFamily: 'Aldrich',
+              fontSize: 32,
               color: colors.PURPLE,
-              left: 10,
-              textAlign: 'left',
-              top: -25,
-          }}>Email</Text>
-          <TextInput 
-            style={[styles.input]}
-            placeholder="Enter your email"
-            onChangeText={(text) => setEmail(text)}
-          />
-        </View>
-
-        <View>
-          <Text style={{
-              fontFamily: 'Shippori',
-              fontSize: 17,
-              color: colors.PURPLE,
-              left: 10,
-              textAlign: 'left',
-              top: -10,
-          }}>Password</Text>
-          <TextInput 
-            style={[styles.input, { top: -10 }]}
-            placeholder="Enter password"
-            onChangeText={(text) => setPassword(text)}
-            secureTextEntry={true}
+              textAlign: 'center',
+              top: -60,
+          }}>welcome back!</Text>
+            <Text style={{
+                fontFamily: 'Shippori',
+                fontSize: 17,
+                color: colors.PURPLE,
+                left: 10,
+                textAlign: 'left',
+                top: -25,
+            }}>Email</Text>
+            <TextInput 
+              style={[styles.input]}
+              placeholder="Enter your email"
+              onChangeText={(text) => setEmail(text)}
             />
-        </View>
+
+            <Text style={{
+                fontFamily: 'Shippori',
+                fontSize: 17,
+                color: colors.PURPLE,
+                left: 10,
+                textAlign: 'left',
+                top: -10,
+            }}>Password</Text>
+            <TextInput 
+              style={[styles.input, { top: -10 }]}
+              placeholder="Enter password"
+              onChangeText={(text) => setPassword(text)}
+              secureTextEntry={true}
+              />
+          
+          {warning.length > 0 && (
+            <Text style={styles.warningText}>
+            {warning}
+            </Text>
+          )}
         
-        <TouchableOpacity style={styles.button}
-          onPress={OnSignIn}
-        >
-          <Text style={{
-            fontFamily: 'Shippori',
-            fontSize: 14,
-            textAlign: 'center',
-            color: colors.WHITE,
-          }}>{isvalid ? "sign in" : "invalid, try again"}</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.button}
+            onPress={OnSignIn}
+          >
+            <Text style={{
+              fontFamily: 'Shippori',
+              fontSize: 14,
+              textAlign: 'center',
+              color: colors.WHITE,
+            }}>sign in</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button2}
-            onPress={() => {
-              setIsValid(true);
-              router.push('auth/sign-up');
-            }}
-        >
-          <Text style={{
-            fontFamily: 'Shippori',
-            fontSize: 14,
-            textAlign: 'center',
-            color: colors.WHITE,
-          }}>create account</Text>
-        </TouchableOpacity>
 
+          <TouchableOpacity style={styles.button2}
+              onPress={() => {
+                router.push('auth/sign-up');
+              }}
+          >
+            <Text style={{
+              fontFamily: 'Shippori',
+              fontSize: 14,
+              textAlign: 'center',
+              color: colors.WHITE,
+            }}>create account</Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </LinearGradient>
     </KeyboardAvoidingView>
@@ -187,7 +195,7 @@ const styles = StyleSheet.create({
     width: 320,
     alignSelf: 'center',
     borderRadius: 15,
-    marginTop: 35,
+    marginTop: 25,
     justifyContent: 'center',
     top: -10,
   },
@@ -202,4 +210,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     top: -25,
   },
-});
+  warningText: {
+    color: 'red',
+    marginTop: 5,
+    alignSelf: 'center',
+    fontFamily: 'Shippori',
+  }
+}); 

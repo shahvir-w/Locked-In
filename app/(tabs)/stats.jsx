@@ -11,6 +11,7 @@ import { colors } from '../../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from '../_layout';
 import { fetchUserLockedInScore } from '../../backend/FirebaseUtils';
+import * as Haptics from 'expo-haptics';
 
 export default function Stats() {
   const {theme} = useContext(ThemeContext);
@@ -48,6 +49,7 @@ export default function Stats() {
   const [refresh, setRefresh] = useState(false);
   const pullMe = () => {
     setRefresh(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
     setTimeout(() => {
       setRefresh(false)
     }, 500)
