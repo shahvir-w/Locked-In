@@ -2,7 +2,7 @@
 
 Struggling to get things done!? Having a hard time staying consistent!?
 
-Then, Locked In is the right app for you!
+Then Locked In is the right app for you!
 
 Locked In is a mobile application created using React Native. It is a task completion 
 tracker that gives you a score out of 100 based on the number of tasks you complete and the number of days you
