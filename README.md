@@ -27,7 +27,8 @@ To run the program:
 
 1. Clone the repository:
 
- ```git clone https://github.com/shahvir-w/Locked-In.git
+ ```
+ git clone https://github.com/shahvir-w/Locked-In.git
  cd Locked-In
  ```
 
