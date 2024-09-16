@@ -12,6 +12,7 @@ Tasks are duplicated from the day before. Tasks can also be added or deleted, an
 Light theme and Dark theme are available!
 
 Some screenshots from the application:
+
 <img src="screenshots/unnamed.jpg" alt="image1" width="200"/>
 <img src="screenshots/unnamed-1.jpg" alt="image2" width="200"/>
 <img src="screenshots/unnamed-2.jpg" alt="image3" width="200"/>
