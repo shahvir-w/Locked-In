@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Pressable } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import React, { useState } from 'react';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useRouter } from 'expo-router';
@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from './_layout';
-import { addHabit } from '../backend/FirebaseUtils';
+import { addHabit } from '../databaseUtils/FirebaseUtils';
 import * as Haptics from 'expo-haptics';
 
 export default function CreateHabit() {
@@ -33,7 +33,9 @@ export default function CreateHabit() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={{ fontFamily: 'aldrich', fontSize: 25, color: '#fff' }}>new task</Text>
-        <TouchableOpacity onPress={() => router.back()} style={{ top: -2 }}>
+        <TouchableOpacity 
+          onPress={() => router.back()} style={{ top: -2 }} 
+          hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}>
           <FontAwesome6 name="xmark" size={30} color="white" />
         </TouchableOpacity>
       </View>
@@ -56,7 +58,8 @@ export default function CreateHabit() {
             {[1, 2, 3, 4, 5].map((num) => (
               <TouchableOpacity
                 key={num}
-                style={[styles.importanceButton, {backgroundColor: activeColors.progressIndicator}, importance === num && styles.selectedImportance]}
+                style={[styles.importanceButton, {backgroundColor: activeColors.progressIndicator}, 
+                  importance === num && styles.selectedImportance]}
                 onPress={() => setImportance(num)}
               >
                 <Text style={[styles.importanceText, {color: activeColors.regular}, importance === num && {color: "#fff"}]}>{num}</Text>

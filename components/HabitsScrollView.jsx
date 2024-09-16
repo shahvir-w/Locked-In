@@ -14,7 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from '../app/_layout';
-import { deleteHabit } from '../backend/FirebaseUtils';
+import { deleteHabit } from '../databaseUtils/FirebaseUtils';
 import * as Haptics from 'expo-haptics';
 
 export default function HabitsScrollView({ habits, remainingTasks, date }) {

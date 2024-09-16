@@ -44,9 +44,9 @@ export default function ScoreCalculationExp() {
             {'\n'}<Text style={[{color: colors.PURPLE}, {fontSize: 25}]}>•</Text>A streak of 1 corresponds to a Fibonacci value of 2.
             {'\n'}<Text style={[{color: colors.PURPLE}, {fontSize: 25}]}>•</Text>A streak of 2 corresponds to a Fibonacci value of 3.
             {'\n'}<Text style={[{color: colors.PURPLE}, {fontSize: 25}]}>•</Text>A streak of 3 corresponds to a Fibonacci value of 5, and so on.
-            {'\n'}{'\n'}If your streak is positive, your Locked-In Score increases by the Fibonacci value each day. For example:
+            {'\n'}{'\n'}If your streak is positive, your Locked In Score increases by the Fibonacci value each day. For example:
             {'\n'}<Text style={[{color: colors.PURPLE}, {fontSize: 25}]}>•</Text>With a streak of 4 and a 90%+ completion score, your score increases by 13 (the Fibonacci value for a streak of 4).
-            {'\n'}{'\n'}If your streak is negative, your Locked-In Score decreases by the Fibonacci value divided by your completion score for that day. For example:
+            {'\n'}{'\n'}If your streak is negative, your Locked In Score decreases by the Fibonacci value divided by your completion score for that day. For example:
             {'\n'}<Text style={[{color: colors.PURPLE}, {fontSize: 25}]}>•</Text>With a streak of -2 and a 65% completion score, your score decreases by 5 / 0.65, which is about 7.69.
           </Text>
         </View>

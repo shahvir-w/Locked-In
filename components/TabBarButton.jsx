@@ -44,21 +44,21 @@ const TabBarButton = ({
     });
 
 
-  return (
-    <Pressable
-        onPress={onPress}
-        onLongPress={onLongPress}
-        style={styles.tabbarItem}
-    >
-        <Animated.View style={animatedIconStyle}>
-            {TabIcons[routeName]({
-                color: isFocused ? activeColors.regular : activeColors.regular
-            })}
-        </Animated.View>
-        
-        <Animated.Text style={[{ color: activeColors.regular, fontSize: 12 }, animatedTextStyle]}>{label}</Animated.Text>
-  </Pressable>
-  )
+    return (
+        <Pressable
+            onPress={onPress}
+            onLongPress={onLongPress}
+            style={styles.tabbarItem}
+        >
+            <Animated.View style={animatedIconStyle}>
+                {TabIcons[routeName]({
+                    color: isFocused ? activeColors.regular : activeColors.regular
+                })}
+            </Animated.View>
+            
+            <Animated.Text style={[{ color: activeColors.regular, fontSize: 12 }, animatedTextStyle]}>{label}</Animated.Text>
+        </Pressable>
+    )
 }
 
 export default TabBarButton

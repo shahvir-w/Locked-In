@@ -14,13 +14,10 @@ const Habit = (props) => {
     let activeColors = colors[theme.mode]
 
     const [isChecked, setIsChecked] = useState(props.checked);
-    
     const [isLoading, setIsLoading] = useState(false);
     
     const toggleCheckBox = async () => {
         if (props.isPastDate || isLoading) return;
-
-
         setIsLoading(true);
         
         try {
@@ -50,7 +47,8 @@ const Habit = (props) => {
         } catch (error) {
             console.error("Error updating completion score:", error);
         } finally {
-            setIsLoading(false); // Reset loading state to allow interactions again
+            // Reset loading state
+            setIsLoading(false); 
         }
     };
     

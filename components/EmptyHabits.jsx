@@ -12,8 +12,8 @@ export default function EmptyHabits({ date }) {
   
   const router = useRouter();
 
-  const today = new Date().toLocaleDateString(); // Get today's date in "YYYY-MM-DD" format
-  const isPastDate = date < today; // Check if the selected date is in the past
+  const today = new Date().toLocaleDateString(); // today's date in "YYYY-MM-DD"
+  const isPastDate = date < today; // checking if selected date is in the past
 
   const handleAddHabit = () => {
     router.push('create-habits');

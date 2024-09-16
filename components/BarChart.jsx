@@ -7,7 +7,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { colors } from '../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from '../app/_layout';
-import { fetchCompletionScores, fetchOldestDate } from '../backend/FirebaseUtils';
+import { fetchCompletionScores, fetchOldestDate } from '../databaseUtils/FirebaseUtils';
 
 export default function CompletionScoreChart( {refresh} ) {
   const {theme} = useContext(ThemeContext)
@@ -37,7 +37,7 @@ export default function CompletionScoreChart( {refresh} ) {
   }
 
   const handleDateLeft = () => {
-    const newDate = day;
+    const newDate = new Date(day);
     newDate.setDate(day.getDate() - 7); // Move one week back
     var diff = newDate.getDate() - newDate.getDay() + (newDate.getDay() === 0 ? -6 : 1);
     dateStartOfWeek = new Date(newDate.setDate(diff));
@@ -46,25 +46,22 @@ export default function CompletionScoreChart( {refresh} ) {
     var diff = oldest.getDate() - oldest.getDay() + (oldest.getDay() === 0 ? -6 : 1);
     oldestStartOfWeek = new Date(oldest.setDate(diff));
 
-    if (dateStartOfWeek >= oldestStartOfWeek) setDay(newDate);
+    if (dateStartOfWeek.toLocaleDateString() >= oldestStartOfWeek.toLocaleDateString()) setDay(newDate);
     else newDate.setDate(day.getDate() + 7);
-    console.log("new", dateStartOfWeek)
-    console.log("oldest", oldestStartOfWeek)
   };
 
   const handleDateRight = () => {
-    const newDate = day;
+    const newDate = new Date(day);
     newDate.setDate(day.getDate() + 7); // Move one week forward
     var diff = newDate.getDate() - newDate.getDay() + (newDate.getDay() === 0 ? -6 : 1);
     dateStartOfWeek = new Date(newDate.setDate(diff));
 
     var diff = today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1);
     TodayStartOfWeek = new Date(today.setDate(diff));
-
-    if (dateStartOfWeek <= TodayStartOfWeek) setDay(newDate);
+    
+    if (dateStartOfWeek.toLocaleDateString() <= TodayStartOfWeek.toLocaleDateString()) setDay(newDate);
     else newDate.setDate(day.getDate() - 7);
-    console.log("new", dateStartOfWeek)
-    console.log("today", TodayStartOfWeek)
+    
   };
 
   useEffect(() => {
@@ -111,7 +108,7 @@ export default function CompletionScoreChart( {refresh} ) {
             barWidth={11}
             spacing={24}
             frontColor='#7C81FC'
-            initialSpacing={5}  // Added initial space between the line and the x-axis
+            initialSpacing={5}
             noOfSections={4}
             rulesType={ruleTypes.DASHED}
             rulesColor={activeColors.chartGray}

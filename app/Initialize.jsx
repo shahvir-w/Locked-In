@@ -6,10 +6,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '@/constants/colors';
 
 export default function Initialize() {
-  
   const router = useRouter();
-
   const navigation = useNavigation();
+  
   useEffect(() => {
     navigation.setOptions({
       headerShown:false

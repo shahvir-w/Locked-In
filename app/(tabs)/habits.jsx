@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import EmptyHabits from '../../components/EmptyHabits';
 import HabitsScrollView from '../../components/HabitsScrollView';
-import { loadHabits } from '../../backend/FirebaseUtils';
-import useMostRecentDate from '../../backend/FindRecentDate';
-import { duplicateHabits } from '../../backend/CreateDays';
+import useMostRecentDate from '../../databaseUtils/FindRecentDate';
+import { duplicateHabits } from '../../databaseUtils/CreateDays';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { colors } from "../../constants/colors"
 import { useContext } from 'react';
 import { ThemeContext } from '../_layout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { fetchOldestDate } from '../../backend/FirebaseUtils';
+import { loadHabits, fetchOldestDate } from '../../databaseUtils/FirebaseUtils';
 
 export default function Habits() {
   const [userHabits, setUserHabits] = useState([]);
@@ -26,6 +25,7 @@ export default function Habits() {
   let activeColors = colors[theme.mode]
 
   useEffect(() => {
+    // for duplicating previous habits/tasks each day
     const duplicate = async () => {
       if (mostRecentDate && today !== mostRecentDate && mostRecentDate != "no data") {
         await duplicateHabits(mostRecentDate, today);
@@ -43,16 +43,19 @@ export default function Habits() {
   };
 
   const handleDateLeft = () => {
+    // accessing previous date
     const newDate = modifyDate(date, -1);
     if (newDate >= oldestDate) setDate(newDate);
   };
 
   const handleDateRight = () => {
+    // accessing next date
     const newDate = modifyDate(date, 1);
     if (newDate <= today) setDate(newDate);
   };
 
   useEffect(() => {
+    // loading habits when date changes
     const fetchHabits = async () => {
       const uid = await AsyncStorage.getItem('userUID');
       const firstDay = await fetchOldestDate(uid);

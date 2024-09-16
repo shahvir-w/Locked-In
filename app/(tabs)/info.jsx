@@ -9,9 +9,8 @@ import Collapsible from 'react-native-collapsible';
 import { colors } from "../../constants/colors";
 import { useContext } from 'react';
 import { ThemeContext } from '../_layout';
-import { deleteAccountAndData, fetchOldestDate, fetchUserEmail, fetchUserName } from '../../backend/FirebaseUtils';
+import { deleteAccountAndData, fetchOldestDate, fetchUserEmail } from '../../databaseUtils/FirebaseUtils';
 import * as Haptics from 'expo-haptics';
-
 
 const Accordion = ({ title, children, isOpen, onToggle }) => {
   const {theme} = useContext(ThemeContext);
@@ -56,9 +55,8 @@ export default function Info() {
     } catch (error) {
       console.error("Error during account deletion:", error);
     }
-};
+  };
   
-
   const toggleAccordion = (index) => {
     setActiveAccordion((prevIndex) => (prevIndex === index ? null : index));
   };
@@ -77,6 +75,7 @@ export default function Info() {
   const [email, setEmail] = useState('');
    
   useEffect(() => {
+    // fetching user detials
     const fetchUser = async () => {
       const uid = await AsyncStorage.getItem('userUID');
       const firstDay = await fetchOldestDate(uid);
@@ -91,7 +90,7 @@ export default function Info() {
     fetchUser();
   }, []);
 
-  // Account Section Content
+  // account section
   const accountBody = (
     <View>
       <Text style={[styles.accountText, {color: activeColors.regular}]}>
@@ -111,6 +110,7 @@ export default function Info() {
     
   );
 
+  // appearance section
   const appearanceBody = (
     <View style={styles.toggleContainer}>
       <Text style={[styles.toggleText, {color: activeColors.regular}]}>Dark</Text>
@@ -125,6 +125,7 @@ export default function Info() {
     </View>
   );
 
+  // notification section
   const notificationsBody = (
     <View>
       <Text style={styles.regularPurpText}>
@@ -133,6 +134,7 @@ export default function Info() {
     </View>
   );
 
+  // contact section
   const contactBody = (
     <View>
       <Text style={[styles.accountText, {color: activeColors.regular}]}>

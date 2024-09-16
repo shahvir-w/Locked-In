@@ -7,9 +7,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../configs/FirebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { fetchUserName } from '../../../backend/FirebaseUtils';
+import { fetchUserName } from '../../../databaseUtils/FirebaseUtils';
 import * as Haptics from 'expo-haptics';
-
 
 export default function SignIn() {
   const router = useRouter();
@@ -26,10 +25,11 @@ export default function SignIn() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
-      // Store the user ID in AsyncStorage for persistence
+      
+      // Storing user ID in AsyncStorage
       await AsyncStorage.setItem('userUID', user.uid);
 
+      // Storing user name in AsyncStorage
       const name = await fetchUserName(user.uid);
       await AsyncStorage.setItem('userName', name);
 
@@ -87,6 +87,7 @@ export default function SignIn() {
               textAlign: 'center',
               top: -60,
           }}>welcome back!</Text>
+          
             <Text style={{
                 fontFamily: 'Shippori',
                 fontSize: 17,
@@ -132,7 +133,6 @@ export default function SignIn() {
               color: colors.WHITE,
             }}>sign in</Text>
           </TouchableOpacity>
-
 
           <TouchableOpacity style={styles.button2}
               onPress={() => {

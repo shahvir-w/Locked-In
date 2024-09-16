@@ -7,7 +7,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { colors } from '../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from '../app/_layout';
-import { fetchLockedInScores, fetchOldestDate } from '../backend/FirebaseUtils';
+import { fetchLockedInScores, fetchOldestDate } from '../databaseUtils/FirebaseUtils';
 
 export default function LockedInChart() {
   const {theme} = useContext(ThemeContext);
@@ -37,7 +37,7 @@ export default function LockedInChart() {
   }
   
   const handleDateLeft = () => {
-    const newDate = day;
+    const newDate = new Date(day);
     newDate.setDate(day.getDate() - 7); // Move one week back
     var diff = newDate.getDate() - newDate.getDay() + (newDate.getDay() === 0 ? -6 : 1);
     dateStartOfWeek = new Date(newDate.setDate(diff));
@@ -46,14 +46,12 @@ export default function LockedInChart() {
     var diff = oldest.getDate() - oldest.getDay() + (oldest.getDay() === 0 ? -6 : 1);
     oldestStartOfWeek = new Date(oldest.setDate(diff));
 
-    if (dateStartOfWeek >= oldestStartOfWeek) setDay(newDate);
+    if (dateStartOfWeek.toLocaleDateString() >= oldestStartOfWeek.toLocaleDateString()) setDay(newDate);
     else newDate.setDate(day.getDate() + 7);
-    console.log("new", dateStartOfWeek)
-    console.log("oldest", oldestStartOfWeek)
   };
 
   const handleDateRight = () => {
-    const newDate = day;
+    const newDate = new Date(day);
     newDate.setDate(day.getDate() + 7); // Move one week forward
     var diff = newDate.getDate() - newDate.getDay() + (newDate.getDay() === 0 ? -6 : 1);
     dateStartOfWeek = new Date(newDate.setDate(diff));
@@ -61,10 +59,8 @@ export default function LockedInChart() {
     var diff = today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1);
     TodayStartOfWeek = new Date(today.setDate(diff));
 
-    if (dateStartOfWeek <= TodayStartOfWeek) setDay(newDate);
+    if (dateStartOfWeek.toLocaleDateString() <= TodayStartOfWeek.toLocaleDateString()) setDay(newDate);
     else newDate.setDate(day.getDate() - 7);
-    console.log("new", dateStartOfWeek)
-    console.log("today", TodayStartOfWeek)
   };
 
   useEffect(() => {
@@ -110,29 +106,29 @@ export default function LockedInChart() {
           curveIntensity={0}
           data={lineData}
           height={110}
-          width={262}  // Dynamically set the width
+          width={262}
           maxValue={100}
           hideDataPoints
-          spacing={35.5}  // Keep spacing consistent
+          spacing={35.5}
           color='#7C81FC'
           thickness1={2}
           startFillColor1='#7C81FC'
           endFillColor1='#7C81FC'
           startOpacity={1}
           endOpacity={0.025}
-          initialSpacing={10}  // Added initial space between the line and the x-axis
+          initialSpacing={10}
           noOfSections={4}
-          yAxisThickness={0} // Hides the y-axis line
+          yAxisThickness={0}
           rulesType={ruleTypes.DASHED}
           rulesColor={activeColors.chartGray}
-          rulesLength={225} // Ensure rules cover the entire width of the chart
+          rulesLength={225}
           rulesThickness={1}
           dashWidth={2}
           yAxisTextStyle={{ color: activeColors.chartGray , fontSize: 13}}
           yAxisLabelSuffix="%"
-          xAxisThickness={0} // Hides the x-axis line
+          xAxisThickness={0}
           xAxisLabelTextStyle={{ color: activeColors.chartGray , fontSize: 12}}
-          xAxisLabelsVerticalShift={5} // Adjust vertical shift for labels
+          xAxisLabelsVerticalShift={5}
         />
       </View>
     </View>
