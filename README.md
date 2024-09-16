@@ -1,50 +1,41 @@
-# Welcome to your Expo app 👋
+# Locked In
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Struggling to get things done!? Having a hard time staying consistent!? Then, Locked In is the right app for you!
 
-## Get started
+Locked In is a mobile application created using React Native. It is a task completion 
+tracker that gives you a score of 100 based on the number of tasks you complete and the number of days you
+complete them. It basically determines if you are "Locked In" or not 😅!
 
-1. Install dependencies
+## Description
 
-   ```bash
-   npm install
-   ```
+Tasks are duplicated from the day before. Tasks can also be added or deleted, and a complete history of previous tasks can be viewed.
+Light theme and Dark theme are available!
 
-2. Start the app
+Some screenshots from the application:
+![alt text](screenshots/unnamed.jpg)
+![alt text](screenshots/unnamed-1.jpg)
+![alt text](screenshots/unnamed-2.jpg)
+![alt text](screenshots/unnamed-3.jpg)
 
-   ```bash
-    npx expo start
-   ```
+## Getting Started
 
-In the output, you'll find options to open the app in a
+Locked In will be launched to the App Store very soon!
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+To run the program:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+1. Clone the repository:
 
-## Get a fresh project
+ ```git clone https://github.com/shahvir-w/Locked-In.git
+ cd Locked-In
+ ```
 
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+2. Set up the environment and install dependencies:
+- If you haven't already, install Node.js.
+- Then, make sure you have Expo CLI installed. If it's not installed, run:
+ ```npm install -g expo-cli
+ ```
+- Now, to start the project, run:
+ ```npx expo start
+ ```
+3. Running on a Device
+You can run the app on your mobile device by downloading the Expo Go app from the App Store or Google Play. Once you have it, scan the QR code displayed in the Expo developer tools to run the app on your device.
