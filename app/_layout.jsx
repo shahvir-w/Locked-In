@@ -1,4 +1,3 @@
-import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { TransitionPresets } from '@react-navigation/stack';
 import { createContext, useEffect, useState } from "react";
@@ -8,13 +7,6 @@ export const ThemeContext = createContext();
 
 export default function RootLayout() {
 
-  useFonts({
-    'JockeyOne': require('./../assets/fonts/JockeyOne-Regular.ttf'),
-    'Aldrich': require('./../assets/fonts/Aldrich-Regular.ttf'),
-    'Shippori': require('./../assets/fonts/ShipporiAntiqueB1-Regular.ttf'),
-    'Slackey': require('./../assets/fonts/Slackey-Regular.ttf'),
-  });
-  
   const [theme, setTheme] = useState({ mode: "dark" });
 
   useEffect(() => {
@@ -44,6 +36,7 @@ export default function RootLayout() {
     <Stack screenOptions={{
       headerShown: false,
       gestureEnabled: false,
+      lazy: false
     }}>
       <Stack.Screen 
       name="(tabs)" 
@@ -55,7 +48,7 @@ export default function RootLayout() {
         name="create-habits" 
         options={{
           ...TransitionPresets.ModalSlideFromBottomIOS,
-          gestureEnabled: true 
+          gestureEnabled: true,
         }}
       />
       <Stack.Screen 

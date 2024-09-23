@@ -112,7 +112,7 @@ export default function Stats() {
               'worklet';
               return value.toFixed(2); // 2 decimal places
             }}
-            duration={700} 
+            duration={1400} 
           />
 
           <Text style={styles.updateText}>score is updated once each day</Text>

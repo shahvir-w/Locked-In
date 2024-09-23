@@ -98,9 +98,9 @@ export default function SignIn() {
             }}>Email</Text>
             <TextInput 
               style={[styles.input]}
-              placeholder="Enter your email"
+              placeholder="Enter email"
               onChangeText={(text) => setEmail(text)}
-            />
+              />
 
             <Text style={{
                 fontFamily: 'Shippori',

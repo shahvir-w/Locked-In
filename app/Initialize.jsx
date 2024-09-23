@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    marginTop: 190,
+    marginTop: 210,
   },
   container: {
     flexDirection: 'row',
