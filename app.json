@@ -12,7 +12,8 @@
       "backgroundColor": "#000000"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.shahvir.w.LockedIn"
     },
     "android": {
       "adaptiveIcon": {
@@ -30,6 +31,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8fcb4968-a000-4eeb-95de-0b4634e67782"
+      }
     }
   }
 }

@@ -1,11 +1,11 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { colors } from '@/constants/colors'
+import React, { useState } from 'react'
 import { useRouter } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../configs/FirebaseConfig';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fetchUserName } from '../../../databaseUtils/FirebaseUtils';
 import * as Haptics from 'expo-haptics';
@@ -72,7 +72,7 @@ export default function SignIn() {
             <Text style={{
                 fontFamily: 'JockeyOne',
                 fontSize: 41,
-                color: colors.PURPLE,
+                color: '#7C81FC',
                 top: 18,
                 left: -12,
             }}>locked in</Text>
@@ -83,7 +83,7 @@ export default function SignIn() {
           <Text style={{
               fontFamily: 'Aldrich',
               fontSize: 32,
-              color: colors.PURPLE,
+              color: '#7C81FC',
               textAlign: 'center',
               top: -60,
           }}>welcome back!</Text>
@@ -91,7 +91,7 @@ export default function SignIn() {
             <Text style={{
                 fontFamily: 'Shippori',
                 fontSize: 17,
-                color: colors.PURPLE,
+                color: '#7C81FC',
                 left: 10,
                 textAlign: 'left',
                 top: -25,
@@ -105,7 +105,7 @@ export default function SignIn() {
             <Text style={{
                 fontFamily: 'Shippori',
                 fontSize: 17,
-                color: colors.PURPLE,
+                color: '#7C81FC',
                 left: 10,
                 textAlign: 'left',
                 top: -10,
@@ -130,7 +130,7 @@ export default function SignIn() {
               fontFamily: 'Shippori',
               fontSize: 14,
               textAlign: 'center',
-              color: colors.WHITE,
+              color: '#fff',
             }}>sign in</Text>
           </TouchableOpacity>
 
@@ -143,7 +143,7 @@ export default function SignIn() {
               fontFamily: 'Shippori',
               fontSize: 14,
               textAlign: 'center',
-              color: colors.WHITE,
+              color: '#fff',
             }}>create account</Text>
           </TouchableOpacity>
         </View>
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     color: "#949494",
     padding: 10,
     borderWidth: 1,
-    borderColor: colors.PURPLE,
+    borderColor: '#7C81FC',
     height: 40,
     width: 320,
     alignSelf: 'center',
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     top: -25,
   },
   button: {
-    backgroundColor: colors.PURPLE,
+    backgroundColor: '#7C81FC',
     height: 54,
     width: 320,
     alignSelf: 'center',
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     top: -10,
   },
   button2: {
-    borderColor: colors.PURPLE,
+    borderColor: '#7C81FC',
     borderWidth: 2,
     height: 54,
     width: 320,

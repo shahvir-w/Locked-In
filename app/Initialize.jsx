@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { useNavigation, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { colors } from '@/constants/colors';
 
 export default function Initialize() {
   const router = useRouter();
@@ -32,7 +31,7 @@ export default function Initialize() {
             style={{ height: 96, width: 88, left: 0 }}
           />
           <View>
-            <Text style={{ fontFamily: 'JockeyOne', fontSize: 41, color: colors.PURPLE, top: 18, left: -12 }}>
+            <Text style={{ fontFamily: 'JockeyOne', fontSize: 41, color: '#7C81FC', top: 18, left: -12 }}>
               locked in
             </Text>
           </View>
@@ -41,7 +40,7 @@ export default function Initialize() {
         <Text style={{
             fontFamily: 'Aldrich',
             fontSize: 32,
-            color: colors.PURPLE,
+            color: '#7C81FC',
             textAlign: 'center',
             top: -50,
         }}>complete daily {'\n'}tasks consistently {'\n'}to be “locked in”</Text>
@@ -51,7 +50,7 @@ export default function Initialize() {
             fontFamily: 'Shippori', 
             fontSize: 14,
             textAlign: 'center', 
-            color: colors.WHITE 
+            color: '#fff' 
             }}>get started!</Text>
         </TouchableOpacity>
       </SafeAreaView>
@@ -78,7 +77,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   button: {
-    backgroundColor: colors.PURPLE,
+    backgroundColor: '#7C81FC',
     height: 54,
     width: 320,
     alignSelf: 'center',
