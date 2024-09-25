@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native";
 import Initialize from './Initialize';
-import { Redirect } from "expo-router";
+import { useRouter } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
-
-// Keep the splash screen visible until we manually hide it
-SplashScreen.preventAutoHideAsync();
+import { ThemeContext } from "./_layout";
+import { colors } from "../constants/colors";
 
 export default function Index() {
+  const router = useRouter();
   const [user, setUser] = useState(null);
-  const [isReady, setIsReady] = useState(false); // State to track when everything is ready
-  
-  // Load custom fonts
+  const [isReady, setIsReady] = useState(false);
+
+  const { theme } = useContext(ThemeContext);
+  let activeColors = colors[theme.mode];
+
   const [fontsLoaded] = useFonts({
     'JockeyOne': require('./../assets/fonts/JockeyOne-Regular.ttf'),
     'Aldrich': require('./../assets/fonts/Aldrich-Regular.ttf'),
@@ -24,22 +26,16 @@ export default function Index() {
   useEffect(() => {
     const prepareApp = async () => {
       try {
-        // Check if user is authenticated (retrieve from AsyncStorage)
         const storedUser = await AsyncStorage.getItem('userUID');
         if (storedUser) {
-          setUser(storedUser); // Set the user if found
+          setUser(storedUser);
         }
 
-        // Make sure fonts are loaded before hiding the splash screen
-        if (fontsLoaded) {
-          setIsReady(true); // Mark everything as ready when both conditions are met
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
         if (fontsLoaded) {
           setIsReady(true);
         }
+      } catch (error) {
+        console.log(error);
       }
     };
 
@@ -49,16 +45,24 @@ export default function Index() {
   useEffect(() => {
     const hideSplash = async () => {
       if (isReady) {
-        await SplashScreen.hideAsync(); // Hide the splash screen when everything is ready
+        await SplashScreen.hideAsync();
       }
     };
 
     hideSplash();
   }, [isReady]);
 
-  // While waiting for everything to be ready, keep the splash screen active and render nothing
+  useEffect(() => {
+    if (isReady && user) {
+      router.replace('./../(tabs)/habits');
+    }
+  }, [isReady, user]);
+
   if (!isReady) {
-    return null;
+    return (
+      <SafeAreaView style={{ backgroundColor: activeColors.backgroundMain, flex: 1 }}>
+      </SafeAreaView>
+    );
   }
 
   return (
@@ -67,13 +71,10 @@ export default function Index() {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: activeColors.backgroundMain,
       }}
     >
-      {user ? ( // If user is authenticated, redirect to main page
-        <Redirect href='./../(tabs)/habits'/>
-      ) : ( // Otherwise, show Initialize screen
-        <Initialize />
-      )}
+      {!user && <Initialize />}
     </SafeAreaView>
   );
 }

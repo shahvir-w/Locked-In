@@ -43,11 +43,14 @@ export default function LockedInChart() {
     dateStartOfWeek = new Date(newDate.setDate(diff));
 
     const oldest = new Date(oldestDate);
-    var diff = oldest.getDate() + 1 - oldest.getDay() + (oldest.getDay() === 0 ? -6 : 1);
+
+    console.log("oldest", oldest)
+
+    var diff = oldest.getDate() - oldest.getDay()
     oldestStartOfWeek = new Date(oldest.setDate(diff));
 
     if (dateStartOfWeek.toLocaleDateString() >= oldestStartOfWeek.toLocaleDateString()) setDay(newDate);
-    else newDate.setDate(day.getDate() + 7);
+    else newDate.setDate(day.getDate() + 7); 
   };
 
   const handleDateRight = () => {

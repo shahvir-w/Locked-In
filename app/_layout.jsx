@@ -41,7 +41,7 @@ export default function RootLayout() {
       <Stack.Screen 
       name="(tabs)" 
       options={{
-        animation: 'none',
+        animation: 'fade',
       }}
       />
       <Stack.Screen 
