@@ -17,8 +17,12 @@ export const initializeFirstDay = async () => {
   });
   
   const date1 = new Date(firstDay);
-  var diff = date1.getDate() - date1.getDay() + (date1.getDay() === 0 ? -6 : 1);
+  var diff = date1.getDate() - date1.getDay()
+
   startOfWeek = new Date(date1.setDate(diff));
+  
+  console.log(diff)
+  console.log(startOfWeek)
 
   const daysInBetween = getDaysBetweenDates(startOfWeek, firstDay);
 

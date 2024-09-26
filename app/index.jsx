@@ -24,6 +24,11 @@ export default function Index() {
   });
 
   useEffect(() => {
+    Text.defaultProps = Text.defaultProps || {};
+    Text.defaultProps.allowFontScaling = false;
+  }, []);
+  
+  useEffect(() => {
     const prepareApp = async () => {
       try {
         const storedUser = await AsyncStorage.getItem('userUID');
