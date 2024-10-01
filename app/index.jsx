@@ -19,7 +19,7 @@ export default function Index() {
   const [fontsLoaded] = useFonts({
     'JockeyOne': require('./../assets/fonts/JockeyOne-Regular.ttf'),
     'Aldrich': require('./../assets/fonts/Aldrich-Regular.ttf'),
-    'Shippori': require('./../assets/fonts/ShipporiAntiqueB1-Regular.ttf'),
+    'Shippori': require('./../assets/fonts/ShipporiAntiqueB1-Regular.ttf'), 
     'Slackey': require('./../assets/fonts/Slackey-Regular.ttf'),
   });
 
@@ -27,7 +27,7 @@ export default function Index() {
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
   }, []);
-  
+
   useEffect(() => {
     const prepareApp = async () => {
       try {
