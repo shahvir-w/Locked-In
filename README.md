@@ -1,5 +1,7 @@
 # Locked In
 
+ON THE APP STORE NOW!
+
 Struggling to get things done!? Having a hard time staying consistent!?
 
 Then Locked In is the right app for you!
@@ -20,8 +22,6 @@ The initial figma design for the app can be viewed here:
 http://tiny.cc/xd9mzz
 
 ## Getting Started
-
-Locked In will be launched to the App Store very soon!
 
 To run the program:
 
