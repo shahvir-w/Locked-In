@@ -1,6 +1,7 @@
 # Locked In
 
 ON THE APP STORE NOW!
+check it out: https://apps.apple.com/ca/app/locked-in-daily-tasks-tracker/id6711331425
 
 Struggling to get things done!? Having a hard time staying consistent!?
 
